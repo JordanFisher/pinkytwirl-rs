@@ -1,11 +1,13 @@
-use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
-use crate::context::{Context, SemanticAction};
+use std::collections::HashMap;
+use crate::contexts::{Context, SemanticAction};
 
-pub fn parse_semantics_file(file_path: &Path, contexts: &mut Vec<Context>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn parse_semantics_file(file_path: &Path, contexts: &mut HashMap<String, Context>) -> Result<(), Box<dyn std::error::Error>> {
     let content = fs::read_to_string(file_path)?;
     let mut current_context: Option<&mut Context> = None;
+
+    // dbg!(&contexts);
 
     for line in content.lines() {
         let trimmed_line = line.trim();
@@ -16,7 +18,7 @@ pub fn parse_semantics_file(file_path: &Path, contexts: &mut Vec<Context>) -> Re
         if !line.starts_with(" ") && !line.starts_with("\t") {
             // This is a context name
             let context_name = trimmed_line.trim_end_matches(':');
-            current_context = contexts.iter_mut().find(|c| c.name == context_name);
+            current_context = contexts.get_mut(context_name);
             if current_context.is_none() {
                 println!("Warning: Context '{}' not found. Skipping.", context_name);
             }

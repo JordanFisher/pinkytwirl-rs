@@ -94,10 +94,10 @@ Default:
         I = Save
         U = FormatDoc
 
-    Meta, Space:
-        P = (Action)InputCreds
+    Meta + Space:
+        P = InputCreds
 
-        N = (Action)ActivateChromeWindow
+        N = ActivateChromeWindow
         M = SearchTabs
 
     CapsLock:
@@ -133,7 +133,7 @@ Ide:
 
         //Space = Ctrl + Tab
 
-    Meta, Space:
+    Meta + Space:
         H = CloseAllTools
 
         J = ViewProjectExplorer
@@ -157,7 +157,7 @@ VSCode:
         D3 = SwitchAndBreak
         D4 = SwitchAndExecuteLastCommand
 
-    Meta, Space:
+    Meta + Space:
         K = FindFile
         U = ViewErrorList
         I = ViewOutput
@@ -166,7 +166,7 @@ VSCode:
 
 // Command prompt. This overrides the tedious Alt-Space e p method for pasting with the default PinkyTwirl paste command Alt + W
 CommandPrompt:
-    Meta, Space:
+    Meta + Space:
         H = ClearScreen
 
 // Browsers
@@ -178,7 +178,7 @@ Browser:
         O = CloseTab
         I = NewTab
 
-    Meta, Space:
+    Meta + Space:
         J = SearchTabs
 
 // PowerShell git map
