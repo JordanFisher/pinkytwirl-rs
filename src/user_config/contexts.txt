@@ -1,0 +1,95 @@
+Default:
+  aliases: []
+  parent: null
+
+Simple:
+  aliases: []
+  parent: Default
+
+Browser:
+  aliases: []
+  parent: Default
+
+Ide:
+  aliases: []
+  parent: Default
+
+Game:
+  aliases: []
+  parent: Simple
+
+CommandPrompt:
+  aliases: ["Command Prompt"]
+  parent: Default
+
+GitCommandPrompt:
+  aliases: ["Command Prompt"]
+  parent: Default
+
+Notepad:
+  aliases: ["Notepad"]
+  parent: Default
+
+NotepadPlusPlus:
+  aliases: ["Notepad++"]
+  parent: Ide
+
+MinGW:
+  aliases: ["MINGW"]
+  parent: CommandPrompt
+
+Git:
+  aliases: []
+  parent: MinGW
+
+Ubuntu:
+  aliases: ["ubuntu"]
+  parent: Git
+
+PowerShell:
+  aliases: ["PowerShell"]
+  parent: GitCommandPrompt
+
+IPython:
+  aliases: ["IPython"]
+  parent: Git
+
+LEd:
+  aliases: ["LEd"]
+  parent: Ide
+
+Excel:
+  aliases: ["Excel"]
+  parent: Default
+
+Photoshop:
+  aliases: ["Photoshop"]
+  parent: Default
+
+ExeShell:
+  aliases: [".exe"]
+  parent: CommandPrompt
+
+Putty:
+  aliases: ["PuTTY", "@"]
+  parent: Git
+
+WindowsSsh:
+  aliases: ["SSH"]
+  parent: Default
+
+VisualStudio:
+  aliases: ["Microsoft Visual"]
+  parent: Ide
+
+VSCode:
+  aliases: ["Visual Studio Code"]
+  parent: Ide
+
+Chrome:
+  aliases: ["Chrome"]
+  parent: Browser
+
+Firefox:
+  aliases: ["Firefox"]
+  parent: Browser

@@ -1,0 +1,223 @@
+Defaults:
+    Meta:
+        I = NavUp
+        J = NavLeft
+        K = NavDown
+        L = NavRight                                                                          
+
+        U = NavHome
+        O = NavEnd
+
+        Y = NavBigUp
+        H = NavBigDown
+
+        M = NavNextWord
+        N = NavPreviousWord
+
+        P         = NavTop
+        Semicolon = NavBottom
+
+        Enter = InsertLine
+
+        D9 = NavPageUp
+        D0 = NavPageDown
+
+        W = Paste
+        E = Undo
+        R = Redo
+
+        G = Focus
+        F = AddressBar
+        
+        A = Search
+        Q = Replace
+        Z = SearchAll
+
+        T = Fullscreen
+
+        V = Rewrap
+
+        Tab = ProgramTab
+        F4  = EndApplication
+
+    D4:
+        I = SelectUp
+        J = SelectLeft
+        K = SelectDown
+        L = SelectRight
+
+        U = SelectHome
+        O = SelectEnd
+
+        Y = SelectBigUp
+        H = SelectBigDown
+
+        M = SelectNextWord
+        N = SelectPreviousWord
+
+        P         = SelectTop
+        Semicolon = SelectBottom
+
+        D9 = SelectPageUp
+        D0 = SelectPageDown
+                    
+        R = Copy
+        T = Paste
+        F = Cut
+
+    D3:
+        I = DeleteUp
+        J = DeleteLeft
+        K = DeleteLine
+        L = DeleteRight
+
+        U = DeleteHome
+        O = DeleteEnd
+
+        Y = DeleteBigUp
+        H = DeleteBigDown
+
+        M = DeleteNextWord
+        N = DeletePreviousWord
+
+        P         = DeleteTop
+        Semicolon = DeleteBottom
+
+        D9 = DeletePageUp
+        D0 = DeletePageDown
+
+    D2:
+        J = FileTabLeft
+        K = FileTabRight
+        P = CloseAllBut
+        O = Close
+        I = Save
+        U = FormatDoc
+
+    Meta, Space:
+        P = (Action)InputCreds
+
+        N = (Action)ActivateChromeWindow
+        M = SearchTabs
+
+    CapsLock:
+        H            = "{}" | Left
+        J            = "()" | Left
+        K            = "{}" | Left | Enter | Enter | Up | Tab
+        L            = "[]" | Left
+        Semicolon    = "<>" | Left
+        Quotes       = Quotes | Quotes | Left
+
+        Y            = Cut | "{}" | Left                           | Paste
+        U            = Cut | "()" | Left                           | Paste
+        I            = Cut | "{}" | Left | Enter| Enter | Up | Tab | Paste
+        O            = Cut | "[]" | Left                           | Paste
+        P            = Cut | "<>" | Left                           | Paste
+        OpenBrackets = Cut | Quotes | Quotes | Left                | Paste
+
+Simple:
+    Meta:
+        F4 = EndApplication
+
+Ide:
+    Meta:
+        Comma  = Comment
+        Period = Uncomment
+
+        B = Debug
+        G = CollapseScope
+        //V = ExpandScope
+        F = GotoDefinition
+        D = FindAllReferences
+        S = Rename
+
+        //Space = Ctrl + Tab
+
+    Meta, Space:
+        H = CloseAllTools
+
+        J = ViewProjectExplorer
+        K = ViewErrorList
+        U = ViewOutput
+        I = ViewSymbols
+        O = ViewFindResults
+        L = ViewCallStack
+        //M = ViewInteractive
+        P = ViewClasses
+        Y = ViewConfigurationSelector
+
+// VS code map
+VSCode:
+    Meta:
+        Q = SearchAll
+        V = Rewrap
+
+        D1 = SelectPanel1
+        D2 = SelectPanel2
+        D3 = SwitchAndBreak
+        D4 = SwitchAndExecuteLastCommand
+
+    Meta, Space:
+        K = FindFile
+        U = ViewErrorList
+        I = ViewOutput
+        O = ViewDebugConsole
+        P = ViewTerminal
+
+// Command prompt. This overrides the tedious Alt-Space e p method for pasting with the default PinkyTwirl paste command Alt + W
+CommandPrompt:
+    Meta, Space:
+        H = ClearScreen
+
+// Browsers
+Browser:
+    Meta:
+        F = AddressBar
+    
+    D2:
+        O = CloseTab
+        I = NewTab
+
+    Meta, Space:
+        J = SearchTabs
+
+// PowerShell git map
+GitCommandPrompt:
+    Meta:
+        S = GitStatus
+        D = GitDiff
+        F = GitAdd
+        G = GitCommit
+        //P = GitPush
+        R = GitReset
+        E = GitResetHard
+        C = DeleteLine | "git config --global user.name \"Jordan Fisher\""
+        V = DeleteLine | "git config --global user.email \"jordan.efisher@gmail.com\""
+        A = ReverseSearch
+
+// Git map
+Git:
+    Meta:
+        S = GitStatus
+        D = GitDiff
+        F = GitAdd
+        G = GitCommit
+        //P = GitPush
+        R = GitReset
+        E = GitResetHard
+        C = DeleteLine | "git config --global user.name \"Jordan Fisher\""
+        V = DeleteLine | "git config --global user.email \"jordan.efisher@gmail.com\""
+        A = ReverseSearch
+
+    // tmux map
+    D1:
+        J = PaneLeft
+        L = PaneRight
+        I = PaneUp
+        K = PaneDown
+        Comma  = PaneSyncOn
+        Period = PaneSyncOff
+        M = PaneArrange
+        N = PaneBig
+        OpenBrackets = PaneNew
+        CloseBrackets = PaneKill
