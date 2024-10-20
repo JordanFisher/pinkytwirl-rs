@@ -1,4 +1,4 @@
-Defaults:
+Default:
     Meta:
         I = NavUp
         J = NavLeft

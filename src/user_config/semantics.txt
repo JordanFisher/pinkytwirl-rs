@@ -1,13 +1,13 @@
-Defaults:
+Default:
     // Text navigation
-    NavLeft = None + Left
-    NavRight = None + Right
-    NavUp = None + Up
-    NavDown = None + Down
-    NavHome = None + Home
-    NavEnd = None + End
-    NavPageUp = None + PageUp
-    NavPageDown = None + PageDown
+    NavLeft = Left
+    NavRight = Right
+    NavUp = Up
+    NavDown = Down
+    NavHome = Home
+    NavEnd = End
+    NavPageUp = PageUp
+    NavPageDown = PageDown
     NavNextWord = Ctrl + Right
     NavPreviousWord = Ctrl + Left
     NavBigUp = 12 * Up
@@ -33,8 +33,8 @@ Defaults:
 
     // Text deletion
     DeleteLine = Home | Home | Shift + End | Delete
-    DeleteLeft = None + Backspace
-    DeleteRight = None + Delete
+    DeleteLeft = Backspace
+    DeleteRight = Delete
     DeleteUp = NavUp | DeleteLine
     DeleteDown = NavDown | DeleteLine
     DeleteHome = SelectHome | Delete
@@ -70,7 +70,7 @@ Defaults:
     ProgramTab = StartAltTab
     FileTabLeft = StartCtrlTab_Up
     FileTabRight = StartCtrlTab_Down
-    Menu = None + Alt
+    Menu = Alt
 
     // File actions
     Save = Ctrl + S
@@ -86,7 +86,7 @@ Defaults:
     SearchTabs = 6 * Escape | Ctrl + K
 
     // Application
-    Fullscreen = None + F11
+    Fullscreen = F11
     EndApplication = Alt + F4
 
     // Console

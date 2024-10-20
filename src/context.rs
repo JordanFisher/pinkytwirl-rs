@@ -10,10 +10,16 @@ pub struct YamlContext {
 }
 
 #[derive(Debug)]
+pub struct SemanticAction {
+    pub string_definition: String,
+}
+
+#[derive(Debug)]
 pub struct Context {
     pub name: String,
     pub aliases: Vec<String>,
     pub parent: Option<Box<Context>>,
+    pub semantic_actions: HashMap<String, SemanticAction>,
 }
 
 pub fn parse_yaml_file(file_path: &Path) -> Result<Vec<Context>, Box<dyn std::error::Error>> {
@@ -31,6 +37,7 @@ pub fn parse_yaml(yaml_str: &str) -> Result<Vec<Context>, serde_yaml::Error> {
             name: name.clone(),
             aliases: yaml_context.aliases.clone(),
             parent: None,
+            semantic_actions: HashMap::new(),
         });
     }
 
