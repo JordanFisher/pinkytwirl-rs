@@ -9,9 +9,12 @@ pub struct YamlContext {
     pub parent: Option<String>,
 }
 
-#[derive(Debug)]
-pub struct SemanticAction {
-    pub string_definition: String,
+#[derive(Debug, Clone)]
+pub enum SemanticAction {
+    Sequence(Vec<SemanticAction>),
+    Action(String),
+    KeyCombination(Vec<String>),
+    LiteralString(String),
 }
 
 #[derive(Debug)]
@@ -56,4 +59,33 @@ pub fn parse_yaml(yaml_str: &str) -> Result<HashMap<String, Context>, serde_yaml
     }
 
     Ok(contexts)
+}
+
+pub fn parse_semantic_action(input: &str) -> SemanticAction {
+    let parts: Vec<&str> = input.split('|').map(str::trim).collect();
+    let mut sequence = Vec::new();
+
+    for part in parts {
+        if part.starts_with('"') && part.ends_with('"') {
+            sequence.push(SemanticAction::LiteralString(part[1..part.len()-1].to_string()));
+        } else if part.contains('+') {
+            let keys: Vec<String> = part.split('+').map(|s| s.trim().to_string()).collect();
+            sequence.push(SemanticAction::KeyCombination(keys));
+        } else if part.contains('*') {
+            let (count, action) = part.split_once('*').unwrap();
+            let count: usize = count.trim().parse().unwrap_or(1);
+            let action = action.trim().to_string();
+            for _ in 0..count {
+                sequence.push(SemanticAction::Action(action.clone()));
+            }
+        } else {
+            sequence.push(SemanticAction::Action(part.to_string()));
+        }
+    }
+
+    if sequence.len() == 1 {
+        sequence.pop().unwrap()
+    } else {
+        SemanticAction::Sequence(sequence)
+    }
 }

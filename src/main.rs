@@ -27,11 +27,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("  Parent: {:?}", context.parent);
         println!("  Semantic Actions:");
         for (action_name, action) in &context.semantic_actions {
-            println!("    {}: {}", action_name, action.string_definition);
+            println!("    {}: {:?}", action_name, action);
         }
         println!("  Key Mappings:");
         for (key, action) in &context.key_mappings {
-            println!("    {}: {}", key, action.string_definition);
+            println!("    {}: {:?}", key, action);
         }
         println!();
     }

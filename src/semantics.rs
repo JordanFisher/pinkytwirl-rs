@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::Path;
 use std::collections::HashMap;
-use crate::contexts::{Context, SemanticAction};
+use crate::contexts::{Context, SemanticAction, parse_semantic_action};
 
 pub fn parse_semantics_file(file_path: &Path, contexts: &mut HashMap<String, Context>) -> Result<(), Box<dyn std::error::Error>> {
     let content = fs::read_to_string(file_path)?;
@@ -25,9 +25,8 @@ pub fn parse_semantics_file(file_path: &Path, contexts: &mut HashMap<String, Con
             if let Some((key, value)) = trimmed_line.split_once('=') {
                 let action_name = key.trim().to_string();
                 let action_definition = value.trim().to_string();
-                context.semantic_actions.insert(action_name, SemanticAction {
-                    string_definition: action_definition,
-                });
+                let semantic_action = parse_semantic_action(&action_definition);
+                context.semantic_actions.insert(action_name, semantic_action);
             }
         }
     }
