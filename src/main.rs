@@ -41,6 +41,45 @@ impl PinkyTwirlEngine {
         Ok(())
     }
 
+    pub fn get_context(&self, app_name: &str, window_name: &str) -> Option<&contexts::Context> {
+        // Helper function for exact match
+        let exact_match = |name: &str| -> Option<&contexts::Context> {
+            self.contexts.values().find(|c| c.aliases.contains(&name.to_string()))
+        };
+
+        // Helper function for case-insensitive match
+        let case_insensitive_match = |name: &str| -> Option<&contexts::Context> {
+            let lower_name = name.to_lowercase();
+            self.contexts.values().find(|c| 
+                c.aliases.iter().any(|alias| alias.to_lowercase() == lower_name)
+            )
+        };
+
+        // Helper function for substring match
+        let substring_match = |name: &str| -> Option<&contexts::Context> {
+            let lower_name = name.to_lowercase();
+            self.contexts.values().find(|c| 
+                c.aliases.iter().any(|alias| {
+                    let lower_alias = alias.to_lowercase();
+                    lower_alias.contains(&lower_name) || lower_name.contains(&lower_alias)
+                })
+            )
+        };
+
+        // Try exact match with app name
+        exact_match(app_name)
+            // Then try exact match with window name
+            .or_else(|| exact_match(window_name))
+            // Then try case-insensitive match with app name
+            .or_else(|| case_insensitive_match(app_name))
+            // Then try case-insensitive match with window name
+            .or_else(|| case_insensitive_match(window_name))
+            // Then try substring match with app name
+            .or_else(|| substring_match(app_name))
+            // Finally, try substring match with window name
+            .or_else(|| substring_match(window_name))
+    }
+
     pub fn debug_print(&self) {
         for context in self.contexts.values() {
             println!("Context: {}", context.name);
@@ -64,7 +103,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut engine = PinkyTwirlEngine::new(config_dir);
 
     engine.load_configurations()?;
-    engine.debug_print();
+    // engine.debug_print();
 
+    // Example usage of get_context
+    let test_cases = vec![
+        ("Visual Studio Code", "main.rs - MyProject"),
+        ("FIREFOX", "Google - Mozilla Firefox"),
+        ("cmd", "Command Prompt"),
+        ("notepad++", "config.txt - Notepad++"),
+        ("unknown_app", "Unknown Window"),
+    ];
+
+    for (app_name, window_name) in test_cases {
+        match engine.get_context(app_name, window_name) {
+            Some(context) => println!("Matched context for '{}' - '{}': {}", app_name, window_name, context.name),
+            None => println!("No matching context found for '{}' - '{}'", app_name, window_name),
+        }
+    }
+    
     Ok(())
 }
