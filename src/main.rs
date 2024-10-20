@@ -1,7 +1,10 @@
-// Load the JSON config files (YAML?).
-// State manager, input/output. Returns flag for whether to pass through the event or not.
-// Basic tests with synthetic input/outputs.
-// Call windows/macos from rust for synth events?
+// [x] Load the JSON config files (YAML?).
+// [ ] Parse the inner semantics.
+// [ ] Context lookup.
+// [ ] State manager, input/output. Returns flag for whether to pass through the event or not.
+// [ ] Basic tests with synthetic input/outputs.
+// [ ] Embed into windows
+// [ ] Embed into macOS
 
 use std::path::Path;
 mod contexts;

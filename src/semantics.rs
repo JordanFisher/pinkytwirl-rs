@@ -7,8 +7,6 @@ pub fn parse_semantics_file(file_path: &Path, contexts: &mut HashMap<String, Con
     let content = fs::read_to_string(file_path)?;
     let mut current_context: Option<&mut Context> = None;
 
-    // dbg!(&contexts);
-
     for line in content.lines() {
         let trimmed_line = line.trim();
         if trimmed_line.is_empty() || trimmed_line.starts_with("//") {
