@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::fs;
+use std::fmt;
 use std::path::Path;
 use serde::{Deserialize, Serialize};
 
@@ -9,12 +10,126 @@ pub struct YamlContext {
     pub parent: Option<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum KeyState {
+    Up,
+    Down,
+    DownUp,
+}
+
+#[derive(Debug, Clone)]
+pub struct KeyEvent {
+    pub key: String,
+    pub state: KeyState,
+    pub shift: bool,
+    pub ctrl: bool,
+    pub alt: bool,
+    pub meta: bool,
+    pub app_name: Option<String>,
+    pub window_name: Option<String>,
+}
+
+impl fmt::Display for KeyEvent {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut modifiers = Vec::new();
+        if self.ctrl { modifiers.push("Ctrl"); }
+        if self.shift { modifiers.push("Shift"); }
+        if self.alt { modifiers.push("Alt"); }
+        if self.meta { modifiers.push("Meta"); }
+
+        let key_str = if modifiers.is_empty() {
+            self.key.clone()
+        } else {
+            format!("{} + {}", modifiers.join(" + "), self.key)
+        };
+
+        write!(f, "KeyEvent({}, {:?})", key_str, self.state)?;
+
+        if let Some(app) = &self.app_name {
+            write!(f, ", App: {}", app)?;
+        }
+        if let Some(window) = &self.window_name {
+            write!(f, ", Window: {}", window)?;
+        }
+
+        Ok(())
+    }
+}
+
+pub fn key_press(s: &str) -> KeyEvent {
+    let parts: Vec<String> = s.split('+').map(|s| s.trim().to_lowercase().to_string()).collect();
+
+    let mut key = "";
+    let mut shift = false;
+    let mut ctrl = false;
+    let mut alt = false;
+    let mut meta = false;
+
+    for part in parts.iter() {
+        match part.as_str() {
+            "shift" => shift = true,
+            "ctrl" => ctrl = true,
+            "alt" => alt = true,
+            "meta" => meta = true,
+            _ => key = part,
+        }
+    }
+
+    if parts.len() == 1 {
+        key = parts[0].as_str();
+    }
+
+    KeyEvent {
+        key: key.to_string(),
+        state: KeyState::DownUp,
+        shift: shift,
+        ctrl: ctrl,
+        alt: alt,
+        meta: meta,
+        app_name: None,
+        window_name: None,
+    }
+}
+
+pub fn key_down(s: &str) -> KeyEvent {
+    let mut event = key_press(s);
+    event.state = KeyState::Down;
+    event
+}
+
+pub fn key_up(s: &str) -> KeyEvent {
+    let mut event = key_press(s);
+    event.state = KeyState::Up;
+    event
+}
+
 #[derive(Debug, Clone)]
 pub enum SemanticAction {
     Sequence(Vec<SemanticAction>),
     Action(String),
-    KeyCombination(Vec<String>),
+    KeyEvent(KeyEvent),
     LiteralString(String),
+}
+
+impl fmt::Display for SemanticAction {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            SemanticAction::Sequence(actions) => {
+                write!(f, "Sequence(")?;
+                for (i, action) in actions.iter().enumerate() {
+                    if i < actions.len() - 1 {
+                        write!(f, "{} | ", action)?;
+                    } else {
+                        write!(f, "{}", action)?;
+                    }
+                }
+                write!(f, ")")
+            },
+            SemanticAction::Action(action) => write!(f, "Action({})", action),
+            SemanticAction::KeyEvent(event) => write!(f, "{}", event),
+            SemanticAction::LiteralString(s) => write!(f, "LiteralString(\"{}\")", s),
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -69,14 +184,13 @@ pub fn parse_semantic_action(input: &str) -> SemanticAction {
         if part.starts_with('"') && part.ends_with('"') {
             sequence.push(SemanticAction::LiteralString(part[1..part.len()-1].to_string()));
         } else if part.contains('+') {
-            let keys: Vec<String> = part.split('+').map(|s| s.trim().to_string()).collect();
-            sequence.push(SemanticAction::KeyCombination(keys));
+            sequence.push(SemanticAction::KeyEvent(key_press(part)));
         } else if part.contains('*') {
-            let (count, action) = part.split_once('*').unwrap();
+            let (count, key) = part.split_once('*').unwrap();
             let count: usize = count.trim().parse().unwrap_or(1);
-            let action = action.trim().to_string();
+            let key = key.trim().to_string();
             for _ in 0..count {
-                sequence.push(SemanticAction::Action(action.clone()));
+                sequence.push(SemanticAction::KeyEvent(key_press(&key)));
             }
         } else {
             sequence.push(SemanticAction::Action(part.to_string()));

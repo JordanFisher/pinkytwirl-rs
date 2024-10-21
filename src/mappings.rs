@@ -35,7 +35,7 @@ pub fn parse_mappings_file(file_path: &Path, contexts: &mut HashMap<String, Cont
                 };
                 let action = value.trim().to_string();
                 let semantic_action = parse_semantic_action(&action);
-                context.key_mappings.insert(full_key, semantic_action);
+                context.key_mappings.insert(full_key.to_lowercase(), semantic_action);
             }
         }
     }
