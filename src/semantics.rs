@@ -2,8 +2,9 @@ use std::fs;
 use std::path::Path;
 use std::collections::HashMap;
 use crate::contexts::{Context, SemanticAction, parse_semantic_action};
+use crate::keycode_macos::KeyCodeLookup;
 
-pub fn parse_semantics_file(file_path: &Path, contexts: &mut HashMap<String, Context>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn parse_semantics_file(file_path: &Path, contexts: &mut HashMap<String, Context>, keycodes: &KeyCodeLookup) -> Result<(), Box<dyn std::error::Error>> {
     let content = fs::read_to_string(file_path)?;
     let mut current_context: Option<&mut Context> = None;
 
@@ -25,7 +26,7 @@ pub fn parse_semantics_file(file_path: &Path, contexts: &mut HashMap<String, Con
             if let Some((key, value)) = trimmed_line.split_once('=') {
                 let action_name = key.trim().to_string();
                 let action_definition = value.trim().to_string();
-                let semantic_action = parse_semantic_action(&action_definition);
+                let semantic_action = parse_semantic_action(&action_definition, keycodes);
                 context.semantic_actions.insert(action_name, semantic_action);
             }
         }

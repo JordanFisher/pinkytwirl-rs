@@ -4,6 +4,9 @@ use std::fmt;
 use std::path::Path;
 use serde::{Deserialize, Serialize};
 
+use crate::keycode_macos::KeyCodeLookup;
+
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct YamlContext {
     pub aliases: Vec<String>,
@@ -25,8 +28,6 @@ pub struct KeyEvent {
     pub ctrl: bool,
     pub alt: bool,
     pub meta: bool,
-    pub app_name: Option<String>,
-    pub window_name: Option<String>,
 }
 
 impl fmt::Display for KeyEvent {
@@ -44,13 +45,6 @@ impl fmt::Display for KeyEvent {
         };
 
         write!(f, "KeyEvent({}, {:?})", key_str, self.state)?;
-
-        if let Some(app) = &self.app_name {
-            write!(f, ", App: {}", app)?;
-        }
-        if let Some(window) = &self.window_name {
-            write!(f, ", Window: {}", window)?;
-        }
 
         Ok(())
     }
@@ -86,21 +80,7 @@ pub fn key_press(s: &str) -> KeyEvent {
         ctrl: ctrl,
         alt: alt,
         meta: meta,
-        app_name: None,
-        window_name: None,
     }
-}
-
-pub fn key_down(s: &str) -> KeyEvent {
-    let mut event = key_press(s);
-    event.state = KeyState::Down;
-    event
-}
-
-pub fn key_up(s: &str) -> KeyEvent {
-    let mut event = key_press(s);
-    event.state = KeyState::Up;
-    event
 }
 
 #[derive(Debug, Clone)]
@@ -176,7 +156,7 @@ pub fn parse_yaml(yaml_str: &str) -> Result<HashMap<String, Context>, serde_yaml
     Ok(contexts)
 }
 
-pub fn parse_semantic_action(input: &str) -> SemanticAction {
+pub fn parse_semantic_action(input: &str, keycodes: &KeyCodeLookup) -> SemanticAction {
     let parts: Vec<&str> = input.split('|').map(str::trim).collect();
     let mut sequence = Vec::new();
 
@@ -192,6 +172,8 @@ pub fn parse_semantic_action(input: &str) -> SemanticAction {
             for _ in 0..count {
                 sequence.push(SemanticAction::KeyEvent(key_press(&key)));
             }
+        } else if keycodes.name_to_keycode.contains_key(part) {
+            sequence.push(SemanticAction::KeyEvent(key_press(part)));
         } else {
             sequence.push(SemanticAction::Action(part.to_string()));
         }

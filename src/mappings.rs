@@ -2,8 +2,9 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 use crate::contexts::{Context, SemanticAction, parse_semantic_action};
+use crate::keycode_macos::KeyCodeLookup;
 
-pub fn parse_mappings_file(file_path: &Path, contexts: &mut HashMap<String, Context>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn parse_mappings_file(file_path: &Path, contexts: &mut HashMap<String, Context>, keycodes: &KeyCodeLookup) -> Result<(), Box<dyn std::error::Error>> {
     let content = fs::read_to_string(file_path)?;
     let mut current_context: Option<&mut Context> = None;
     let mut current_prefix = String::new();
@@ -34,7 +35,7 @@ pub fn parse_mappings_file(file_path: &Path, contexts: &mut HashMap<String, Cont
                     format!("{} + {}", current_prefix, key.trim())
                 };
                 let action = value.trim().to_string();
-                let semantic_action = parse_semantic_action(&action);
+                let semantic_action = parse_semantic_action(&action, keycodes);
                 context.key_mappings.insert(full_key.to_lowercase(), semantic_action);
             }
         }

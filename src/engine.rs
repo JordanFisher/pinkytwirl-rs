@@ -13,16 +13,14 @@ use std::path::{Path, PathBuf};
 use std::error::Error;
 use std::collections::{HashMap, VecDeque};
 
-use contexts::{key_down, key_press, key_up, KeyEvent};
-mod contexts;
-mod semantics;
-mod mappings;
+use crate::contexts::{key_press, Context, KeyEvent, KeyState, SemanticAction};
 
 pub struct PinkyTwirlEngine {
-    contexts: HashMap<String, contexts::Context>,
+    contexts: HashMap<String, Context>,
     config_dir: PathBuf,
     pressed_keys: VecDeque<KeyEvent>,
     current_context: Option<String>,
+    keycodes: crate::keycode_macos::KeyCodeLookup,
 }
 
 impl PinkyTwirlEngine {
@@ -32,30 +30,31 @@ impl PinkyTwirlEngine {
             config_dir,
             pressed_keys: VecDeque::new(),
             current_context: None,
+            keycodes: crate::keycode_macos::create_keycode_map(),
         }
     }
 
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {
         let contexts_path = self.config_dir.join("contexts.txt");
-        self.contexts = contexts::parse_yaml_file(&contexts_path)?;
+        self.contexts = crate::contexts::parse_yaml_file(&contexts_path)?;
 
         let semantics_path = self.config_dir.join("semantics.txt");
-        semantics::parse_semantics_file(&semantics_path, &mut self.contexts)?;
+        crate::semantics::parse_semantics_file(&semantics_path, &mut self.contexts, &self.keycodes)?;
 
         let mappings_path = self.config_dir.join("mappings.txt");
-        mappings::parse_mappings_file(&mappings_path, &mut self.contexts)?;
+        crate::mappings::parse_mappings_file(&mappings_path, &mut self.contexts, &self.keycodes)?;
 
         Ok(())
     }
 
-    pub fn get_context(&self, app_name: &str, window_name: &str) -> Option<&contexts::Context> {
+    pub fn get_context(&self, app_name: &str, window_name: &str) -> Option<&Context> {
         // Helper function for exact match
-        let exact_match = |name: &str| -> Option<&contexts::Context> {
+        let exact_match = |name: &str| -> Option<&Context> {
             self.contexts.values().find(|c| c.aliases.contains(&name.to_string()))
         };
 
         // Helper function for case-insensitive match
-        let case_insensitive_match = |name: &str| -> Option<&contexts::Context> {
+        let case_insensitive_match = |name: &str| -> Option<&Context> {
             let lower_name = name.to_lowercase();
             self.contexts.values().find(|c| 
                 c.aliases.iter().any(|alias| alias.to_lowercase() == lower_name)
@@ -63,7 +62,7 @@ impl PinkyTwirlEngine {
         };
 
         // Helper function for substring match
-        let substring_match = |name: &str| -> Option<&contexts::Context> {
+        let substring_match = |name: &str| -> Option<&Context> {
             let lower_name = name.to_lowercase();
             self.contexts.values().find(|c| 
                 c.aliases.iter().any(|alias| {
@@ -108,7 +107,7 @@ impl PinkyTwirlEngine {
         let mut synthetic_events = Vec::new();
 
         match event.state {
-            contexts::KeyState::Down => {
+            KeyState::Down => {
                 self.pressed_keys.push_back(event.clone());
                 
                 if let Some(context) = self.get_context(app_name, window_name) {
@@ -130,19 +129,19 @@ impl PinkyTwirlEngine {
                     return Vec::new();
                 }
             }
-            contexts::KeyState::Up => {
+            KeyState::Up => {
                 self.pressed_keys.retain(|k| &k.key != &event.key);
                 if self.pressed_keys.is_empty() {
                     self.current_context = None;
                 }
             }
-            contexts::KeyState::DownUp => {}
+            KeyState::DownUp => {}
         }
 
         synthetic_events
     }
 
-    fn find_chord_action<'a>(&self, context: &'a contexts::Context, chord: &VecDeque<KeyEvent>) -> Option<contexts::SemanticAction> {
+    fn find_chord_action<'a>(&self, context: &'a Context, chord: &VecDeque<KeyEvent>) -> Option<SemanticAction> {
         let chord_str = chord.iter().map(|key| key.key.clone()).collect::<Vec<String>>().join(" + ");
         dbg!(&chord_str);
         // Lookup the chord in the context's key mappings. If it's not found, try the parent context, then the parent parent, etc.
@@ -159,12 +158,13 @@ impl PinkyTwirlEngine {
         None
     }
 
-    fn resolve_semantic_action(&self, action: &contexts::SemanticAction, context: &contexts::Context) -> Vec<KeyEvent> {
+    fn resolve_semantic_action(&self, action: &SemanticAction, context: &Context) -> Vec<KeyEvent> {
+        dbg!(&action);
         match action {
-            contexts::SemanticAction::Sequence(actions) => {
+            SemanticAction::Sequence(actions) => {
                 actions.iter().flat_map(|a| self.resolve_semantic_action(a, context)).collect()
             }
-            contexts::SemanticAction::Action(action_name) => {
+            SemanticAction::Action(action_name) => {
                 if let Some(action) = context.semantic_actions.get(action_name) {
                     self.resolve_semantic_action(action, context)
                 } else if let Some(parent) = &context.parent {
@@ -177,71 +177,27 @@ impl PinkyTwirlEngine {
                     Vec::new()
                 }
             }
-            contexts::SemanticAction::KeyEvent(keys) => {
+            SemanticAction::KeyEvent(keys) => {
                 vec![keys.clone()]
             }
-            contexts::SemanticAction::LiteralString(s) => {
+            SemanticAction::LiteralString(s) => {
                 //vec![s.clone()]
                 //FIXME: Iterate over the string and return a sequence of key events.
                 Vec::new()
             }
         }
     }
-}
 
-fn main() -> Result<(), Box<dyn Error>> {
-    let config_dir = PathBuf::from("src/user_config");
-    let mut engine = PinkyTwirlEngine::new(config_dir);
-
-    engine.load_configurations()?;
-    engine.print_config();
-
-    // Example usage of get_context
-    println!();
-    println!();
-
-    let test_cases = vec![
-        ("Visual Studio Code", "main.rs - MyProject"),
-        ("FIREFOX", "Google - Mozilla Firefox"),
-        ("cmd", "Command Prompt"),
-        ("notepad++", "config.txt - Notepad++"),
-        ("unknown_app", "Unknown Window"),
-    ];
-
-    for (app_name, window_name) in test_cases {
-        match engine.get_context(app_name, window_name) {
-            Some(context) => println!("Matched context for '{}' - '{}': {}", app_name, window_name, context.name),
-            None => println!("No matching context found for '{}' - '{}'", app_name, window_name),
-        }
+    pub fn macos_handle_key_event(&mut self, key_code: u16, down: bool, shift: bool, ctrl: bool, option: bool, meta: bool, app_name: &str, window_name: &str) -> Vec<KeyEvent> {
+        let key_name = self.keycodes.keycode_to_name.get(&key_code).unwrap_or(&"Unknown".to_string()).clone();
+        let event = KeyEvent {
+            key: key_name,
+            state: if down { KeyState::Down } else { KeyState::Up },
+            shift,
+            ctrl,
+            alt: option,
+            meta,
+        };    
+        self.handle_key_event(event, app_name, window_name)
     }
-    
-    // Example usage of handle_key_event
-    println!();
-    println!();
-
-    // let test_events = vec![
-    //     key_down("meta"),
-    //     key_down("meta + j"),
-    //     key_up("meta + j"),
-    //     key_up("meta")
-    // ];
-
-    // let test_events = vec![
-    //     key_down("j"),
-    //     key_up("j")
-    // ];
-
-    let test_events = vec![
-        key_down("meta"),
-        key_down("meta + tab")
-    ];
-
-    for event in test_events {
-        println!("Event: {}", event);
-        let synthetic_events = engine.handle_key_event(event.clone(), "Visual Studio Code", "main.rs - MyProject");
-        println!("Synthetic events: {:?}", synthetic_events);
-        println!();
-    }
-
-    Ok(())
 }
