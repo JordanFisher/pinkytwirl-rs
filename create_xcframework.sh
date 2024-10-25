@@ -10,8 +10,8 @@ mkdir -p PinkyTwirl.framework/Versions/A/Headers
 mkdir -p PinkyTwirl.framework/Versions/A/Resources
 
 # Copy headers and libraries
-cp target/release/libpinky_twirl.a PinkyTwirl.framework/Versions/A/PinkyTwirl
-cp pinky_twirl.h PinkyTwirl.framework/Versions/A/Headers/
+cp target/release/libpinkytwirl.a PinkyTwirl.framework/Versions/A/PinkyTwirl
+cp pinkytwirl.h PinkyTwirl.framework/Versions/A/Headers/
 cp Info.plist PinkyTwirl.framework/Versions/A/Resources/
 
 # Create symlinks
