@@ -5,13 +5,13 @@ class PinkyTwirl {
     
     init(configPath: String) {
         engine = configPath.withCString { cString in
-            pinky_twirl_engine_new(cString)
+            pinkytwirl_engine_new(cString)
         }
     }
     
     deinit {
         if let engine = engine {
-            pinky_twirl_engine_free(engine)
+            pinkytwirl_engine_free(engine)
         }
     }
     
@@ -19,7 +19,7 @@ class PinkyTwirl {
         var length: UInt = 0
         let eventsPtr = appName.withCString { appNamePtr in
             windowName.withCString { windowNamePtr in
-                pinky_twirl_engine_handle_key_event(
+                pinkytwirl_engine_handle_key_event(
                     engine,
                     keyCode,
                     down,
@@ -35,7 +35,7 @@ class PinkyTwirl {
         }
         
         defer {
-            pinky_twirl_free_key_events(eventsPtr, length)
+            pinkytwirl_free_key_events(eventsPtr, length)
         }
         
         guard let events = eventsPtr else {
