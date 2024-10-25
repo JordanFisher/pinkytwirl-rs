@@ -1,11 +1,10 @@
-use std::collections::HashMap;
-use std::fs;
-use std::fmt;
-use std::path::Path;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fmt;
+use std::fs;
+use std::path::Path;
 
 use crate::keycode_macos::KeyCodeLookup;
-
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct YamlContext {
@@ -33,10 +32,18 @@ pub struct KeyEvent {
 impl fmt::Display for KeyEvent {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut modifiers = Vec::new();
-        if self.ctrl { modifiers.push("Ctrl"); }
-        if self.shift { modifiers.push("Shift"); }
-        if self.alt { modifiers.push("Alt"); }
-        if self.meta { modifiers.push("Meta"); }
+        if self.ctrl {
+            modifiers.push("Ctrl");
+        }
+        if self.shift {
+            modifiers.push("Shift");
+        }
+        if self.alt {
+            modifiers.push("Alt");
+        }
+        if self.meta {
+            modifiers.push("Meta");
+        }
 
         let key_str = if modifiers.is_empty() {
             self.key.clone()
@@ -51,7 +58,10 @@ impl fmt::Display for KeyEvent {
 }
 
 pub fn key_press(s: &str) -> KeyEvent {
-    let parts: Vec<String> = s.split('+').map(|s| s.trim().to_lowercase().to_string()).collect();
+    let parts: Vec<String> = s
+        .split('+')
+        .map(|s| s.trim().to_lowercase().to_string())
+        .collect();
 
     let mut key = "";
     let mut shift = false;
@@ -104,7 +114,7 @@ impl fmt::Display for SemanticAction {
                     }
                 }
                 write!(f, ")")
-            },
+            }
             SemanticAction::Action(action) => write!(f, "Action({})", action),
             SemanticAction::KeyEvent(event) => write!(f, "{}", event),
             SemanticAction::LiteralString(s) => write!(f, "LiteralString(\"{}\")", s),
@@ -121,7 +131,9 @@ pub struct Context {
     pub key_mappings: HashMap<String, SemanticAction>,
 }
 
-pub fn parse_yaml_file(file_path: &Path) -> Result<HashMap<String, Context>, Box<dyn std::error::Error>> {
+pub fn parse_yaml_file(
+    file_path: &Path,
+) -> Result<HashMap<String, Context>, Box<dyn std::error::Error>> {
     let yaml_str = fs::read_to_string(file_path)?;
     Ok(parse_yaml(&yaml_str)?)
 }
@@ -133,13 +145,16 @@ pub fn parse_yaml(yaml_str: &str) -> Result<HashMap<String, Context>, serde_yaml
     // First pass: Create Context objects.
     for (name, yaml_context) in &yaml_contexts {
         println!("Creating context: {}", name);
-        contexts.insert(name.clone(), Context {
-            name: name.clone(),
-            aliases: yaml_context.aliases.clone(),
-            parent: yaml_context.parent.clone(),
-            semantic_actions: HashMap::new(),
-            key_mappings: HashMap::new(),
-        });
+        contexts.insert(
+            name.clone(),
+            Context {
+                name: name.clone(),
+                aliases: yaml_context.aliases.clone(),
+                parent: yaml_context.parent.clone(),
+                semantic_actions: HashMap::new(),
+                key_mappings: HashMap::new(),
+            },
+        );
     }
 
     // Second pass: Make sure that parent contexts exists if set.
@@ -147,7 +162,10 @@ pub fn parse_yaml(yaml_str: &str) -> Result<HashMap<String, Context>, serde_yaml
     for context in contexts.values_mut() {
         if let Some(parent_name) = &context.parent {
             if !context_names.contains(parent_name) {
-                println!("Warning: Parent context '{}' not found for context '{}'. Skipping.", parent_name, context.name);
+                println!(
+                    "Warning: Parent context '{}' not found for context '{}'. Skipping.",
+                    parent_name, context.name
+                );
                 context.parent = None;
             }
         }
@@ -162,7 +180,9 @@ pub fn parse_semantic_action(input: &str, keycodes: &KeyCodeLookup) -> SemanticA
 
     for part in parts {
         if part.starts_with('"') && part.ends_with('"') {
-            sequence.push(SemanticAction::LiteralString(part[1..part.len()-1].to_string()));
+            sequence.push(SemanticAction::LiteralString(
+                part[1..part.len() - 1].to_string(),
+            ));
         } else if part.contains('+') {
             sequence.push(SemanticAction::KeyEvent(key_press(part)));
         } else if part.contains('*') {

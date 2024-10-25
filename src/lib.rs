@@ -3,20 +3,20 @@ use std::os::raw::c_char;
 use std::path::PathBuf;
 
 mod contexts;
-mod semantics;
-mod mappings;
-mod keycode_macos;
 mod engine;
+mod keycode_macos;
+mod mappings;
+mod semantics;
 
 // Re-export the types we need
-pub use crate::contexts::KeyState;
 pub use crate::contexts::KeyEvent;
+pub use crate::contexts::KeyState;
 pub use crate::engine::PinkyTwirlEngine;
 
 #[repr(C)]
 pub struct FFIKeyEvent {
     pub key: *mut c_char,
-    pub state: bool,  // true for down, false for up
+    pub state: bool, // true for down, false for up
     pub shift: bool,
     pub ctrl: bool,
     pub alt: bool,
@@ -34,7 +34,9 @@ pub extern "C" fn pinkytwirl_engine_new(config_path: *const c_char) -> *mut Pink
 #[no_mangle]
 pub extern "C" fn pinkytwirl_engine_free(ptr: *mut PinkyTwirlEngine) {
     if !ptr.is_null() {
-        unsafe { Box::from_raw(ptr); }
+        unsafe {
+            Box::from_raw(ptr);
+        }
     }
 }
 
@@ -52,10 +54,12 @@ pub extern "C" fn pinkytwirl_engine_handle_key_event(
     out_length: *mut usize,
 ) -> *mut FFIKeyEvent {
     let engine = unsafe { &mut *engine };
-    
+
     let app_name = unsafe { CStr::from_ptr(app_name) }.to_str().unwrap_or("");
-    let window_name = unsafe { CStr::from_ptr(window_name) }.to_str().unwrap_or("");
-    
+    let window_name = unsafe { CStr::from_ptr(window_name) }
+        .to_str()
+        .unwrap_or("");
+
     let events = engine.macos_handle_key_event(
         key_code,
         down,
@@ -66,7 +70,7 @@ pub extern "C" fn pinkytwirl_engine_handle_key_event(
         app_name,
         window_name,
     );
-    
+
     let ffi_events: Vec<FFIKeyEvent> = events
         .into_iter()
         .map(|e| FFIKeyEvent {
@@ -78,9 +82,11 @@ pub extern "C" fn pinkytwirl_engine_handle_key_event(
             meta: e.meta,
         })
         .collect();
-    
-    unsafe { *out_length = ffi_events.len(); }
-    
+
+    unsafe {
+        *out_length = ffi_events.len();
+    }
+
     let ptr = ffi_events.as_ptr() as *mut FFIKeyEvent;
     std::mem::forget(ffi_events);
     ptr

@@ -19,17 +19,23 @@ impl KeyCodeLookup {
     pub fn add_pair(&mut self, keycode: u16, name: &str) {
         if !self.keycode_to_name.contains_key(&keycode) {
             self.keycode_to_name.insert(keycode, name.to_string());
-            self.keycode_to_name.insert(keycode, name.to_string().to_lowercase());
-            self.keycode_to_name.insert(keycode, capitalize(name.to_string().to_lowercase()));
-            self.keycode_to_name.insert(keycode, name.to_string().to_uppercase());
+            self.keycode_to_name
+                .insert(keycode, name.to_string().to_lowercase());
+            self.keycode_to_name
+                .insert(keycode, capitalize(name.to_string().to_lowercase()));
+            self.keycode_to_name
+                .insert(keycode, name.to_string().to_uppercase());
         }
         if self.name_to_keycode.contains_key(name) {
             panic!("Key name '{}' already exists in the map", name);
         } else {
             self.name_to_keycode.insert(name.to_string(), keycode);
-            self.name_to_keycode.insert(name.to_string().to_lowercase(), keycode);
-            self.name_to_keycode.insert(capitalize(name.to_string().to_lowercase()), keycode);
-            self.name_to_keycode.insert(name.to_string().to_uppercase(), keycode);
+            self.name_to_keycode
+                .insert(name.to_string().to_lowercase(), keycode);
+            self.name_to_keycode
+                .insert(capitalize(name.to_string().to_lowercase()), keycode);
+            self.name_to_keycode
+                .insert(name.to_string().to_uppercase(), keycode);
         }
     }
 }
