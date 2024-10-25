@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "PinkyTwirl",
     platforms: [
-        .macOS(.v11)  // Specify minimum macOS version
+        .macOS(.v11)
     ],
     products: [
         .library(
@@ -14,8 +14,7 @@ let package = Package(
     targets: [
         .target(
             name: "PinkyTwirl",
-            dependencies: ["PinkyTwirlCore"],
-            path: "Sources/PinkyTwirl"),
+            dependencies: ["PinkyTwirlCore"]),
         .binaryTarget(
             name: "PinkyTwirlCore",
             path: "PinkyTwirl.xcframework")
