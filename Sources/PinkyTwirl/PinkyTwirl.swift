@@ -1,4 +1,5 @@
 import Foundation
+import PinkyTwirlCore
 
 class PinkyTwirl {
     private var engine: OpaquePointer?
