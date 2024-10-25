@@ -7,13 +7,9 @@ header = """
 #include <stdbool.h>
 """
 
-[
-export
-]
+[export]
 prefix = "pinkytwirl_"
 include = ["FFIKeyEvent"]
 
-[
-defines
-]
+[defines]
 "target_os = macos" = "TARGET_OS_MACOS"
