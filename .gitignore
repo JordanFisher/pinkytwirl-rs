@@ -1,2 +1,4 @@
 target/
 Cargo.lock
+PinkyTwirl.framework/
+PinkyTwirl.xcframework/
