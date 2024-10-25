@@ -1,13 +1,16 @@
 // [x] Load the JSON config files (YAML?).
 // [x] Parse the inner semantics.
 // [x] Context lookup.
-// [ ] KeyCombination(Vec<String>) should become Key(Key), which is just a key with boolean meta
-    // include the key code?
-// [ ] State manager, input/output. Returns flag for whether to pass through the event or not.
-    // copy from claude, but return a Vec<Key> instead of Vec<String>
-// [ ] Basic tests with synthetic input/outputs.
-// [ ] Embed into windows
+// [x] KeyCombination(Vec<String>) should become Key(Key), which is just a key with boolean meta
+    // [x] include the key code?
+// [x] State manager, input/output.
+    // [x] copy from claude, but return a Vec<Key> instead of Vec<String>
+// [x] Basic tests with synthetic input/outputs.
+// [ ] Get FFI built
+// [ ] Returns flag for whether to pass through the event or not?
+// [ ] Keep chord active while pressed.
 // [ ] Embed into macOS
+// [ ] Embed into windows
 
 use std::path::{Path, PathBuf};
 use std::error::Error;
