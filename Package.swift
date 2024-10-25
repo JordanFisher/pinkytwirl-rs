@@ -14,10 +14,10 @@ let package = Package(
     targets: [
         .target(
             name: "PinkyTwirl",
-            dependencies: ["PinkyTwirl"],
+            dependencies: ["PinkyTwirlCore"],
             path: "Sources/PinkyTwirl"),
         .binaryTarget(
-            name: "PinkyTwirl",
+            name: "PinkyTwirlCore",
             path: "PinkyTwirl.xcframework")
     ]
 )
