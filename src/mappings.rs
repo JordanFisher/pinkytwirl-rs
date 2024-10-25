@@ -1,4 +1,4 @@
-use crate::contexts::{parse_semantic_action, Context, SemanticAction};
+use crate::contexts::{parse_semantic_action, Context};
 use crate::keycode_macos::KeyCodeLookup;
 use std::collections::HashMap;
 use std::fs;

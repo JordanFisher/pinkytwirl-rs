@@ -14,9 +14,9 @@
 
 use std::collections::{HashMap, VecDeque};
 use std::error::Error;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
-use crate::contexts::{key_press, Context, KeyEvent, KeyState, SemanticAction};
+use crate::contexts::{Context, KeyEvent, KeyState, SemanticAction};
 
 pub struct PinkyTwirlEngine {
     contexts: HashMap<String, Context>,

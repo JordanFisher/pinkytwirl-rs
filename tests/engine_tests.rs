@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 // Helper functions
 fn key_down(key: &str) -> KeyEvent {
-    let (key_str, mut shift, mut ctrl, mut alt, mut meta) = parse_key_string(key);
+    let (key_str, shift, ctrl, alt, meta) = parse_key_string(key);
     KeyEvent {
         key: key_str,
         state: KeyState::Down,
@@ -15,7 +15,7 @@ fn key_down(key: &str) -> KeyEvent {
 }
 
 fn key_up(key: &str) -> KeyEvent {
-    let (key_str, mut shift, mut ctrl, mut alt, mut meta) = parse_key_string(key);
+    let (key_str, shift, ctrl, alt, meta) = parse_key_string(key);
     KeyEvent {
         key: key_str,
         state: KeyState::Up,
