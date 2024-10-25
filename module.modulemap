@@ -1,0 +1,4 @@
+module PinkyTwirlCore {
+    header "pinkytwirl.h"
+    export *
+}
