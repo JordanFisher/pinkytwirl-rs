@@ -32,3 +32,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // setupEventTap()
     }
+}
