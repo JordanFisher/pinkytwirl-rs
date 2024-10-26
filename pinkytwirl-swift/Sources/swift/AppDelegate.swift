@@ -4,7 +4,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
     private var eventTap: CFMachPort?
     private let sourceInput = CGEventSource(stateID: .hidSystemState)
-    private let accessibilityTimer: Timer?
+    private var accessibilityTimer: Timer?
     private var engine: PinkyTwirlEngine?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
