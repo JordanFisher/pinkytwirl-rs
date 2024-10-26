@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!)
             // Poll until we have permissions.
             accessibilityTimer?.invalidate()
-            accessibilityTimer = Timer.scheduledTimer(timeInterval: 1.0, repeats: true) { [weak self] _ in
+            accessibilityTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
                 if AXIsProcessTrusted() {
                     print("Accessibility permissions granted")
                     self?.accessibilityTimer?.invalidate()
