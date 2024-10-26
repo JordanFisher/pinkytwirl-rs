@@ -14,8 +14,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc func checkAndRequestAccessibilityPermissions() {
-        print("Checking and requesting accessibility permissions")
-        if !AXIsProcessTrusted() {
+        if AXIsProcessTrusted() {
+            print("Accessibility permissions already granted")
+        } else {
+            print("Accessibility permissions not yet granted, please grant them.")
+
             // We don't yet have permissions, so let's ask for them.
             NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!)
             // Poll until we have permissions.
