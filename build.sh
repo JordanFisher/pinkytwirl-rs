@@ -1,10 +1,13 @@
 #!/bin/bash
 set -e
 
-export SWIFT_BRIDGE_OUT_DIR="$(pwd)/pinkytwirl-generated"
-
+# Build the Rust code and generate the Swift bridge.
 cargo build --release --manifest-path pinkytwirl-rs/Cargo.toml --target aarch64-apple-darwin
 
+# Make sure the output directory exists.
+mkdir -p pinkytwirl-swift/Contents/MacOS
+
+# Compile the Swift code.
 swiftc -L pinkytwirl-rs/target/aarch64-apple-darwin/release \
     -lpinkytwirl -import-objc-header bridging-header.h \
     pinkytwirl-generated/SwiftBridgeCore.swift \
