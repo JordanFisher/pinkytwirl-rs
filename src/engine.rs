@@ -20,14 +20,14 @@ use crate::contexts::{Context, KeyEvent, KeyState, SemanticAction};
 
 pub struct PinkyTwirlEngine {
     contexts: HashMap<String, Context>,
-    config_dir: PathBuf,
+    config_dir: String,
     pressed_keys: VecDeque<KeyEvent>,
     current_context: Option<String>,
     keycodes: crate::keycode_macos::KeyCodeLookup,
 }
 
 impl PinkyTwirlEngine {
-    pub fn new(config_dir: PathBuf) -> Self {
+    pub fn new(config_dir: String) -> Self {
         PinkyTwirlEngine {
             contexts: HashMap::new(),
             config_dir,
@@ -38,17 +38,18 @@ impl PinkyTwirlEngine {
     }
 
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {
-        let contexts_path = self.config_dir.join("contexts.txt");
+        let path = PathBuf::from(self.config_dir.clone());
+        let contexts_path = path.join("contexts.txt");
         self.contexts = crate::contexts::parse_yaml_file(&contexts_path)?;
 
-        let semantics_path = self.config_dir.join("semantics.txt");
+        let semantics_path = path.join("semantics.txt");
         crate::semantics::parse_semantics_file(
             &semantics_path,
             &mut self.contexts,
             &self.keycodes,
         )?;
 
-        let mappings_path = self.config_dir.join("mappings.txt");
+        let mappings_path = path.join("mappings.txt");
         crate::mappings::parse_mappings_file(&mappings_path, &mut self.contexts, &self.keycodes)?;
 
         Ok(())

@@ -1,15 +1,13 @@
-use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
-    let config = cbindgen::Config::from_file("cbindgen.toml")
-        .expect("Unable to find cbindgen.toml");
+    let out_dir = PathBuf::from("../pinkytwirl-generated");
+    let bridges = vec!["src/lib.rs"];
+    
+    for path in &bridges {
+        println!("cargo:rerun-if-changed={}", path);
+    }
 
-    cbindgen::Builder::new()
-        .with_crate(crate_dir)
-        .with_config(config)
-        .generate()
-        .expect("Unable to generate bindings")
-        .write_to_file("pinkytwirl.h");
+    swift_bridge_build::parse_bridges(bridges)
+        .write_all_concatenated(out_dir, env!("CARGO_PKG_NAME"));
 }

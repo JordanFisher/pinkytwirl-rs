@@ -1,5 +1,4 @@
 use pinkytwirl::{KeyEvent, KeyState, PinkyTwirlEngine};
-use std::path::PathBuf;
 
 // Helper functions
 fn key_down(key: &str) -> KeyEvent {
@@ -53,8 +52,7 @@ fn parse_key_string(key: &str) -> (String, bool, bool, bool, bool) {
 
 #[test]
 fn test_context_matching() {
-    let config_dir = PathBuf::from("src/user_config");
-    let mut engine = PinkyTwirlEngine::new(config_dir);
+    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
     engine
         .load_configurations()
         .expect("Failed to load configurations");
@@ -95,8 +93,7 @@ fn test_context_matching() {
 
 #[test]
 fn test_key_events() {
-    let config_dir = PathBuf::from("src/user_config");
-    let mut engine = PinkyTwirlEngine::new(config_dir);
+    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
     engine
         .load_configurations()
         .expect("Failed to load configurations");
@@ -133,8 +130,7 @@ fn test_key_events() {
 
 #[test]
 fn test_chord_resolution() {
-    let config_dir = PathBuf::from("src/user_config");
-    let mut engine = PinkyTwirlEngine::new(config_dir);
+    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
     engine
         .load_configurations()
         .expect("Failed to load configurations");
@@ -165,8 +161,7 @@ fn test_chord_resolution() {
 // Optional: Test configuration loading
 #[test]
 fn test_config_loading() {
-    let config_dir = PathBuf::from("src/user_config");
-    let mut engine = PinkyTwirlEngine::new(config_dir);
+    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
     assert!(
         engine.load_configurations().is_ok(),
         "Configuration loading should succeed"
@@ -177,8 +172,7 @@ fn test_config_loading() {
 #[test]
 #[cfg(debug_assertions)]
 fn debug_print_config() {
-    let config_dir = PathBuf::from("src/user_config");
-    let mut engine = PinkyTwirlEngine::new(config_dir);
+    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
     engine
         .load_configurations()
         .expect("Failed to load configurations");
