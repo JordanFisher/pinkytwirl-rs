@@ -21,10 +21,6 @@ impl KeyCodeLookup {
             self.keycode_to_name.insert(keycode, name.to_string());
             self.keycode_to_name
                 .insert(keycode, name.to_string().to_lowercase());
-            self.keycode_to_name
-                .insert(keycode, capitalize(name.to_string().to_lowercase()));
-            self.keycode_to_name
-                .insert(keycode, name.to_string().to_uppercase());
         }
         if self.name_to_keycode.contains_key(name) {
             panic!("Key name '{}' already exists in the map", name);
