@@ -109,44 +109,44 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return (appName, windowTitle, bundleId)
     }
 
-    private func handleEvent(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
-        Unmanaged<CGEvent>? {
-            // Ignore our own synthetic events.
-            if event.getIntegerValueField(.eventSourceUnixProcessID) == 0x1234 {
-                return Unmanaged.passRetained(event)
-            }
-
-            let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
-            let flags = event.flags
-
-            // Get active window info.
-            let (appName, windowTitle, bundleId) = getActiveWindowInfo()
-
-            // Debug print the event.
-            print("Event: \(type) \(keyCode) \(flags) \(appName) \(windowTitle) \(bundleId)")
-
-            // Handle the event.
-            switch type {
-                case .flagsChanged:
-                    // This is when a modifier key is pressed or released.
-                    // (Command, Shift, Option, Control, Caps Lock)
-                    print("Flags changed")
-                    // FIXME: Implement modifier key handling.
-
-                case .keyDown:
-                    if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: true) {
-                        synth.flags.insert([.maskShift, .maskAlternate])
-                        synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-                        synth.post(tap: .cgSessionEventTap)
-                    }
-                    if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: false) {
-                        synth.flags.insert([.maskShift, .maskAlternate])
-                        synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-                        synth.post(tap: .cgSessionEventTap)
-                    }
-                default:
-                    break
-            }
+    private func handleEvent(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? 
+        // Ignore our own synthetic events.
+        if event.getIntegerValueField(.eventSourceUnixProcessID) == 0x1234 {
+            return Unmanaged.passRetained(event)
         }
+
+        let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
+        let flags = event.flags
+
+        // Get active window info.
+        let (appName, windowTitle, bundleId) = getActiveWindowInfo()
+
+        // Debug print the event.
+        print("Event: \(type) \(keyCode) \(flags) \(appName) \(windowTitle) \(bundleId)")
+
+        // Handle the event.
+        switch type {
+            case .flagsChanged:
+                // This is when a modifier key is pressed or released.
+                // (Command, Shift, Option, Control, Caps Lock)
+                print("Flags changed")
+                // FIXME: Implement modifier key handling.
+
+            case .keyDown:
+                if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: true) {
+                    synth.flags.insert([.maskShift, .maskAlternate])
+                    synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
+                    synth.post(tap: .cgSessionEventTap)
+                }
+                if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: false) {
+                    synth.flags.insert([.maskShift, .maskAlternate])
+                    synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
+                    synth.post(tap: .cgSessionEventTap)
+                }
+            default:
+                break
+        }
+    
+        return Unmanaged.passRetained(event)
     }
 }
