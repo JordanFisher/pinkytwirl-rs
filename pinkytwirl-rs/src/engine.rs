@@ -54,6 +54,10 @@ impl PinkyTwirlEngine {
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {
         let path = PathBuf::from(self.config_dir.clone());
 
+        // Print the current working directory.
+        let cwd = std::env::current_dir()?;
+        println!("Current working directory: {:?}", cwd);
+
         // Fully resolve the path.
         let path = std::fs::canonicalize(path)?;
         println!("Resolved path for configurations: {:?}", path);
