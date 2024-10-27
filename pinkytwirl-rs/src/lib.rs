@@ -31,14 +31,8 @@ mod ff {
             meta: bool,
             app_name: &str,
             window_name: &str,
-        ) -> Vec<KeyEvent>;    
-    }
+        ) -> bool;
 
-    extern "Rust" {
-        fn print_hello_rust();
+        fn get_synthetic_events(&mut self) -> Vec<KeyEvent>;
     }
-}
-
-fn print_hello_rust() {
-    println!("Hello, Rust!");
 }

@@ -139,12 +139,18 @@ pub fn parse_yaml_file(
 }
 
 pub fn parse_yaml(yaml_str: &str) -> Result<HashMap<String, Context>, serde_yaml::Error> {
+    let debug = false;
+    let warn = true;
+
     let yaml_contexts: HashMap<String, YamlContext> = serde_yaml::from_str(yaml_str)?;
     let mut contexts = HashMap::new();
 
     // First pass: Create Context objects.
     for (name, yaml_context) in &yaml_contexts {
-        println!("Creating context: {}", name);
+        if debug {
+            println!("Creating context: {}", name);
+        }
+
         contexts.insert(
             name.clone(),
             Context {
@@ -162,10 +168,13 @@ pub fn parse_yaml(yaml_str: &str) -> Result<HashMap<String, Context>, serde_yaml
     for context in contexts.values_mut() {
         if let Some(parent_name) = &context.parent {
             if !context_names.contains(parent_name) {
-                println!(
-                    "Warning: Parent context '{}' not found for context '{}'. Skipping.",
-                    parent_name, context.name
-                );
+                if warn {
+                    println!(
+                        "Warning: Parent context '{}' not found for context '{}'. Skipping.",
+                        parent_name, context.name
+                    );
+                }
+
                 context.parent = None;
             }
         }

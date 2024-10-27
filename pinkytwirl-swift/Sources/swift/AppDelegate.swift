@@ -127,7 +127,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Handle the event.
         switch type {
             case .keyDown:
-                let result = engine?.macos_handle_key_event(
+                let shouldSuppress = engine?.macos_handle_key_event(
                     keyCode,
                     true,
                     flags.contains(.maskShift),
@@ -137,10 +137,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     appName,
                     windowTitle)
                 
-                print("Result: \(result!)")
-                // Result is a RustVec, print each element.
-                for i in 0..<result!.len() {
-                    print("Result \(i): \(result![i])")
+                print("shouldSuppress: \(shouldSuppress!)")
+                if shouldSuppress! {
+                    let synthetic_keys = engine?.get_synthetic_keys()
+                    for i in 0..<result!.len() {
+                        print("Synthetic key to generate \(i): \(result![i])")
+                    }
                 }
 
             // case .flagsChanged:

@@ -7,13 +7,19 @@
 // [x] copy from claude, but return a Vec<Key> instead of Vec<String>
 // [x] Basic tests with synthetic input/outputs.
 // [ ] Get rest of FFI built and initial cycling
-// [ ] Returns flag for whether to pass through the event or not?
-// [ ] Keep chord active while pressed.
+//     [x] Keep pressed keys up to date correctly.
+//     [x] Ambiguous based on stems.
+//     [x] Flag for once no mapping should be applied until full reset. Force reset on meta up.
+//     [x] Flag for once only mappings should be applied until full reset. Force reset on meta up.
+//     [x] Returns flag for whether to pass through the event or not.
+//     [ ] Key down from meta.
+//     [ ] Generate actual key events on macOS.
+//     [ ] Get meta+space+j working
 // [ ] Add README and MIT license
 // [x] Embed into macOS
 // [ ] chrome tab + desktop window switching, most recent, etc
 // [ ] text suggestion, find location of cursor, etc
-// [ ] Embed into windows
+// [ ] Embed into windows (c wrapper? no c#?)
 
 use std::collections::{HashMap, VecDeque};
 use std::error::Error;
@@ -24,9 +30,14 @@ use crate::contexts::{Context, KeyEvent, KeyState, SemanticAction};
 pub struct PinkyTwirlEngine {
     contexts: HashMap<String, Context>,
     config_dir: String,
-    pressed_keys: VecDeque<KeyEvent>,
+    pub pressed_keys: VecDeque<KeyEvent>,
     current_context: Option<String>,
     keycodes: crate::keycode_macos::KeyCodeLookup,
+
+    no_mapping_until_reset: bool,
+    only_mappings_until_reset: bool,
+    synthetic_keys: Vec<KeyEvent>,
+
     pub startup: Result<(), Box<dyn Error>>,
     debug_key_events: bool,
 }
@@ -39,6 +50,11 @@ impl PinkyTwirlEngine {
             pressed_keys: VecDeque::new(),
             current_context: None,
             keycodes: crate::keycode_macos::create_keycode_map(),
+
+            no_mapping_until_reset: false,
+            only_mappings_until_reset: false,
+            synthetic_keys: Vec::new(),
+
             startup: Ok(()),
             debug_key_events: true,
         };
@@ -49,6 +65,13 @@ impl PinkyTwirlEngine {
             eprintln!("Engine error loading configurations: {}", e);
         }
         engine
+    }
+
+    fn reset(&mut self) {
+        self.pressed_keys.clear();
+        self.current_context = None;
+        self.no_mapping_until_reset = false;
+        self.only_mappings_until_reset = false;
     }
 
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {
@@ -158,9 +181,7 @@ impl PinkyTwirlEngine {
         event: KeyEvent,
         app_name: &str,
         window_name: &str,
-    ) -> Vec<KeyEvent> {
-        let mut synthetic_events = Vec::new();
-
+    ) -> (bool, Vec<KeyEvent>) {
         if self.debug_key_events {
             println!(
                 "Engine key event: {} {:?} {} {} {}",
@@ -170,7 +191,19 @@ impl PinkyTwirlEngine {
 
         match event.state {
             KeyState::Down => {
-                self.pressed_keys.push_back(event.clone());
+                // Add the key to the pressed keys if it's not already there.
+                if !self
+                    .pressed_keys
+                    .iter()
+                    .any(|k| &k.key == &event.key && k.state == KeyState::Down)
+                {
+                    self.pressed_keys.push_back(event.clone());
+                }
+
+                if self.no_mapping_until_reset {
+                    // If we're in a state where no mappings should be applied, always let the event through.
+                    return (false, Vec::new());
+                }
 
                 if let Some(context) = self.get_context(app_name, window_name) {
                     if self.debug_key_events {
@@ -179,15 +212,25 @@ impl PinkyTwirlEngine {
                     }
 
                     if let Some(action) = self.find_chord_action(&context, &self.pressed_keys) {
-                        synthetic_events = self.resolve_semantic_action(&action, context);
-                        self.pressed_keys.clear();
+                        // There is a mapping for the current chord, so we will suppress the
+                        // key events and play back the synthetic events instead. We will stay
+                        // in this mode until all keys are released.
+                        let synthetic_events = self.resolve_semantic_action(&action, context);
+                        self.only_mappings_until_reset = true;
+                        return (true, synthetic_events);
                     } else if self.pressed_keys.len() == 1 {
-                        // If it's the first key and doesn't match any chord, let it through
-                        return Vec::new();
+                        // If it's the first key and doesn't match any chord, let it through.
+                        self.no_mapping_until_reset = true;
+                        return (false, Vec::new());
                     } else {
-                        // If it doesn't match any chord, play back the buffered keys
-                        synthetic_events = self.pressed_keys.iter().cloned().collect();
-                        self.pressed_keys.clear();
+                        // If it doesn't match any chord, play back the buffered keys, unless we're in a state where only mappings should be applied.
+                        if self.only_mappings_until_reset {
+                            return (true, Vec::new());
+                        } else {
+                            let synthetic_events = self.pressed_keys.iter().cloned().collect();
+                            self.no_mapping_until_reset = true;
+                            return (false, synthetic_events);
+                        }
                     }
                 } else {
                     if self.debug_key_events {
@@ -195,19 +238,20 @@ impl PinkyTwirlEngine {
                     }
 
                     // If no context is found, let the key through
-                    return Vec::new();
+                    return (false, Vec::new());
                 }
             }
             KeyState::Up => {
                 self.pressed_keys.retain(|k| &k.key != &event.key);
-                if self.pressed_keys.is_empty() {
-                    self.current_context = None;
+                if event.key == "meta" || self.pressed_keys.is_empty() {
+                    self.reset();
                 }
+                return (false, Vec::new());
             }
-            KeyState::DownUp => {}
+            KeyState::DownUp => {
+                return (false, Vec::new());
+            }
         }
-
-        synthetic_events
     }
 
     fn find_chord_action<'a>(
@@ -239,7 +283,7 @@ impl PinkyTwirlEngine {
     }
 
     fn resolve_semantic_action(&self, action: &SemanticAction, context: &Context) -> Vec<KeyEvent> {
-        dbg!(&action);
+        // dbg!(&action);
         match action {
             SemanticAction::Sequence(actions) => actions
                 .iter()
@@ -279,7 +323,7 @@ impl PinkyTwirlEngine {
         meta: bool,
         app_name: &str,
         window_name: &str,
-    ) -> Vec<KeyEvent> {
+    ) -> bool {
         let key_name = self
             .keycodes
             .keycode_to_name
@@ -294,6 +338,14 @@ impl PinkyTwirlEngine {
             alt: option,
             meta,
         };
-        self.handle_key_event(event, app_name, window_name)
+        let (suppress, synthetic_keys) = self.handle_key_event(event, app_name, window_name);
+        self.synthetic_keys = synthetic_keys;
+        suppress
+    }
+
+    pub fn get_synthetic_events(&mut self) -> Vec<KeyEvent> {
+        let synthetic_keys = self.synthetic_keys.clone();
+        self.synthetic_keys.clear();
+        synthetic_keys
     }
 }
