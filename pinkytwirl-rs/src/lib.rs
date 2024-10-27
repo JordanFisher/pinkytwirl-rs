@@ -23,7 +23,7 @@ mod ff {
 
         fn macos_handle_key_event(
             &mut self,
-            key_code: u16,
+            key_code: i64,
             down: bool,
             shift: bool,
             ctrl: bool,

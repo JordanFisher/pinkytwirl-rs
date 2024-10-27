@@ -11,12 +11,12 @@ pub fn capitalize(s: String) -> String {
 }
 
 pub struct KeyCodeLookup {
-    pub keycode_to_name: HashMap<u16, String>,
-    pub name_to_keycode: HashMap<String, u16>,
+    pub keycode_to_name: HashMap<i64, String>,
+    pub name_to_keycode: HashMap<String, i64>,
 }
 
 impl KeyCodeLookup {
-    pub fn add_pair(&mut self, keycode: u16, name: &str) {
+    pub fn add_pair(&mut self, keycode: i64, name: &str) {
         if !self.keycode_to_name.contains_key(&keycode) {
             self.keycode_to_name.insert(keycode, name.to_string());
             self.keycode_to_name

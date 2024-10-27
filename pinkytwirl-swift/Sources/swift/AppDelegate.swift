@@ -134,9 +134,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     ctrl: flags.contains(.maskControl),
                     option: flags.contains(.maskAlternate),
                     meta: flags.contains(.maskCommand),
-                    app_name: &appName,
-                    window_name: &windowTitle,
-                );
+                    app_name: appName,
+                    window_name: windowTitle,
+                )
                 print("Result: \(result!)")
 
             // case .flagsChanged:
