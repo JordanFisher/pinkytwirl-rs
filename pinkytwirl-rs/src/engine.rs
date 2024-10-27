@@ -44,15 +44,22 @@ impl PinkyTwirlEngine {
         };
 
         engine.startup = engine.load_configurations();
+
+        if let Err(e) = &engine.startup {
+            eprintln!("Engine error loading configurations: {}", e);
+        }
         engine
     }
 
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {
         let path = PathBuf::from(self.config_dir.clone());
+
         let contexts_path = path.join("contexts.txt");
+        println!("Loading contexts from: {:?}", contexts_path);
         self.contexts = crate::contexts::parse_yaml_file(&contexts_path)?;
 
         let semantics_path = path.join("semantics.txt");
+        println!("Loading semantics from: {:?}", semantics_path);
         crate::semantics::parse_semantics_file(
             &semantics_path,
             &mut self.contexts,
@@ -60,6 +67,7 @@ impl PinkyTwirlEngine {
         )?;
 
         let mappings_path = path.join("mappings.txt");
+        println!("Loading mappings from: {:?}", mappings_path);
         crate::mappings::parse_mappings_file(&mappings_path, &mut self.contexts, &self.keycodes)?;
 
         Ok(())
@@ -166,6 +174,10 @@ impl PinkyTwirlEngine {
                         self.pressed_keys.clear();
                     }
                 } else {
+                    if self.debug_key_events {
+                        println!("No context found for app: {} window: {}", app_name, window_name);
+                    }
+
                     // If no context is found, let the key through
                     return Vec::new();
                 }
