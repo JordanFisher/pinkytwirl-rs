@@ -54,6 +54,10 @@ impl PinkyTwirlEngine {
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {
         let path = PathBuf::from(self.config_dir.clone());
 
+        // Fully resolve the path.
+        let path = std::fs::canonicalize(path)?;
+        println!("Resolved path for configurations: {:?}", path);
+
         let contexts_path = path.join("contexts.txt");
         println!("Loading contexts from: {:?}", contexts_path);
         self.contexts = crate::contexts::parse_yaml_file(&contexts_path)?;
