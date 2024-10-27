@@ -124,11 +124,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Debug print the event.
         print("Event: \(type) \(keyCode) \(flags) \(appName) \(windowTitle) \(bundleId)")
 
+        var isKeyDown = false
         if type == .flagsChanged {
             // This is when a modifier key is pressed or released.
             // We want to figure out if this is a key down or key up event.
             // We can do this by checking the current state of the key.
-            let isKeyDown = (
+            isKeyDown = (
                 // Left side modifier keys.
                 flags.contains(.maskCommand) && keyCode == 55 ||
                 flags.contains(.maskControl) && keyCode == 59 ||
@@ -139,17 +140,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 flags.contains(.maskControl) && keyCode == 62 ||
                 flags.contains(.maskShift) && keyCode == 60 ||
                 flags.contains(.maskAlternate) && keyCode == 61)
-            if isKeyDown {
-                type = .keyDown
-            } else {
-                type = .keyUp
-            }
+        } else {
+            isKeyDown = type == .keyDown
         }
 
         // Handle the event.
         let shouldSuppress = engine?.macos_handle_key_event(
             keyCode,
-            type == .keyDown,
+            isKeyDown,
             flags.contains(.maskShift),
             flags.contains(.maskControl),
             flags.contains(.maskAlternate),
