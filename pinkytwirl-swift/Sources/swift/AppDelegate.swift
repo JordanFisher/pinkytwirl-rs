@@ -10,7 +10,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         setupStatusBarItem()
         checkAndRequestAccessibilityPermissions()
-        engine = PinkyTwirlEngine.new("testpath")
+        engine = PinkyTwirlEngine.new("../../../pinkytwirl-rs/src/user_config")
     }
 
     private func setupStatusBarItem() {

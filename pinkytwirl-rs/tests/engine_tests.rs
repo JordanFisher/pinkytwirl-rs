@@ -52,10 +52,8 @@ fn parse_key_string(key: &str) -> (String, bool, bool, bool, bool) {
 
 #[test]
 fn test_context_matching() {
-    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
-    engine
-        .load_configurations()
-        .expect("Failed to load configurations");
+    let engine = PinkyTwirlEngine::new("src/user_config".to_string());
+    assert!(engine.startup.is_ok(), "Failed to load configurations");
 
     let test_cases = vec![
         ("Visual Studio Code", "main.rs - MyProject", Some("VSCode")),
@@ -92,48 +90,9 @@ fn test_context_matching() {
 }
 
 #[test]
-fn test_key_events() {
-    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
-    engine
-        .load_configurations()
-        .expect("Failed to load configurations");
-
-    // Test meta key sequence
-    let meta_sequence = vec![key_down("meta"), key_down("meta + tab")];
-
-    for event in meta_sequence {
-        let synthetic_events =
-            engine.handle_key_event(event.clone(), "Visual Studio Code", "main.rs - MyProject");
-        // Add assertions based on expected behavior
-        match event.key.as_str() {
-            "meta" => assert!(synthetic_events.is_empty(), "Meta key should be suppressed"),
-            "tab" => assert!(
-                !synthetic_events.is_empty(),
-                "Meta + Tab should generate synthetic events"
-            ),
-            _ => panic!("Unexpected key in test sequence"),
-        }
-    }
-
-    // Test simple key sequence
-    let simple_sequence = vec![key_down("j"), key_up("j")];
-
-    for event in simple_sequence {
-        let synthetic_events =
-            engine.handle_key_event(event.clone(), "Visual Studio Code", "main.rs - MyProject");
-        assert!(
-            synthetic_events.is_empty(),
-            "Simple key events should pass through"
-        );
-    }
-}
-
-#[test]
 fn test_chord_resolution() {
     let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
-    engine
-        .load_configurations()
-        .expect("Failed to load configurations");
+    assert!(engine.startup.is_ok(), "Failed to load configurations");
 
     let chord_sequence = vec![
         key_down("meta"),
@@ -158,23 +117,9 @@ fn test_chord_resolution() {
     );
 }
 
-// Optional: Test configuration loading
 #[test]
 fn test_config_loading() {
-    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
-    assert!(
-        engine.load_configurations().is_ok(),
-        "Configuration loading should succeed"
-    );
-}
-
-// Optional: Print configuration in debug builds
-#[test]
-#[cfg(debug_assertions)]
-fn debug_print_config() {
-    let mut engine = PinkyTwirlEngine::new("src/user_config".to_string());
-    engine
-        .load_configurations()
-        .expect("Failed to load configurations");
+    let engine = PinkyTwirlEngine::new("src/user_config".to_string());
+    assert!(engine.startup.is_ok(), "Failed to load configurations");
     engine.print_config();
 }

@@ -9,6 +9,7 @@
 // [ ] Get rest of FFI built and initial cycling
 // [ ] Returns flag for whether to pass through the event or not?
 // [ ] Keep chord active while pressed.
+// [ ] Add README and MIT license
 // [x] Embed into macOS
 // [ ] chrome tab + desktop window switching, most recent, etc
 // [ ] text suggestion, find location of cursor, etc
@@ -26,17 +27,22 @@ pub struct PinkyTwirlEngine {
     pressed_keys: VecDeque<KeyEvent>,
     current_context: Option<String>,
     keycodes: crate::keycode_macos::KeyCodeLookup,
+    pub startup: Result<(), Box<dyn Error>>,
 }
 
 impl PinkyTwirlEngine {
     pub fn new(config_dir: String) -> Self {
-        PinkyTwirlEngine {
+        let mut engine = PinkyTwirlEngine {
             contexts: HashMap::new(),
             config_dir,
             pressed_keys: VecDeque::new(),
             current_context: None,
             keycodes: crate::keycode_macos::create_keycode_map(),
-        }
+            startup: Ok(()),
+        };
+
+        engine.startup = engine.load_configurations();
+        engine
     }
 
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {

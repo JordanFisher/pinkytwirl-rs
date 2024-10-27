@@ -20,6 +20,18 @@ mod ff {
 
         #[swift_bridge(associated_to = PinkyTwirlEngine)]
         fn new(config_dir: String) -> PinkyTwirlEngine;
+
+        fn macos_handle_key_event(
+            &mut self,
+            key_code: u16,
+            down: bool,
+            shift: bool,
+            ctrl: bool,
+            option: bool,
+            meta: bool,
+            app_name: &str,
+            window_name: &str,
+        ) -> Vec<KeyEvent>;    
     }
 
     extern "Rust" {
