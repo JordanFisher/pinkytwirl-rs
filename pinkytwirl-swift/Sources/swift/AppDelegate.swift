@@ -144,6 +144,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
                         synth.post(tap: .cgSessionEventTap)
                     }
+                    return nil
                 }
             default:
                 break
