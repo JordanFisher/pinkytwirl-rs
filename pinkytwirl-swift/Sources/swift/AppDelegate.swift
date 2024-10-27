@@ -109,7 +109,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return (appName, windowTitle, bundleId)
     }
 
-    private func handleEvent(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? 
+    private func handleEvent(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
         // Ignore our own synthetic events.
         if event.getIntegerValueField(.eventSourceUnixProcessID) == 0x1234 {
             return Unmanaged.passRetained(event)
