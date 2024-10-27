@@ -111,7 +111,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func handleEvent(proxy: CGEventTapProxy, type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
         // Ignore our own synthetic events.
-        if event.getIntegerValueField(.eventSourceUnixProcessID) == 0x1234 {
+        if event.getIntegerValueField(.eventSourceUserData) == 0x1234 {
             return Unmanaged.passRetained(event)
         }
 
@@ -133,15 +133,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 // FIXME: Implement modifier key handling.
 
             case .keyDown:
-                if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: true) {
-                    synth.flags.insert([.maskShift, .maskAlternate])
-                    synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-                    synth.post(tap: .cgSessionEventTap)
-                }
-                if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: false) {
-                    synth.flags.insert([.maskShift, .maskAlternate])
-                    synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-                    synth.post(tap: .cgSessionEventTap)
+                if keyCode == 38 {
+                    if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: true) {
+                        synth.flags.insert([.maskShift, .maskAlternate])
+                        synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
+                        synth.post(tap: .cgSessionEventTap)
+                    }
+                    if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: false) {
+                        synth.flags.insert([.maskShift, .maskAlternate])
+                        synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
+                        synth.post(tap: .cgSessionEventTap)
+                    }
                 }
             default:
                 break
