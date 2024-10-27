@@ -22,6 +22,7 @@ pub enum KeyState {
 #[derive(Debug, Clone)]
 pub struct KeyEvent {
     pub key: String,
+    pub code: i64,
     pub state: KeyState,
     pub shift: bool,
     pub ctrl: bool,
@@ -85,6 +86,7 @@ pub fn key_press(s: &str) -> KeyEvent {
 
     KeyEvent {
         key: key.to_string(),
+        code: 0,
         state: KeyState::DownUp,
         shift: shift,
         ctrl: ctrl,

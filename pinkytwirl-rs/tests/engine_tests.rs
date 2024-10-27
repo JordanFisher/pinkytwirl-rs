@@ -11,6 +11,7 @@ fn key_down(key: &str) -> KeyEvent {
     let (key_str, shift, ctrl, alt, meta) = parse_key_string(key);
     KeyEvent {
         key: key_str,
+        code: 0,
         state: KeyState::Down,
         shift,
         ctrl,
@@ -23,6 +24,7 @@ fn key_up(key: &str) -> KeyEvent {
     let (key_str, shift, ctrl, alt, meta) = parse_key_string(key);
     KeyEvent {
         key: key_str,
+        code: 0,
         state: KeyState::Up,
         shift,
         ctrl,

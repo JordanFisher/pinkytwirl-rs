@@ -12,14 +12,16 @@
 //     [x] Flag for once no mapping should be applied until full reset. Force reset on meta up.
 //     [x] Flag for once only mappings should be applied until full reset. Force reset on meta up.
 //     [x] Returns flag for whether to pass through the event or not.
-//     [ ] Key down from meta.
+//     [x] Key down from meta.
 //     [ ] Generate actual key events on macOS.
+//     [ ] Get meta+tab working (queue up actual key events?)
 //     [ ] Get meta+space+j working
 // [ ] Add README and MIT license
 // [x] Embed into macOS
 // [ ] chrome tab + desktop window switching, most recent, etc
 // [ ] text suggestion, find location of cursor, etc
 // [ ] Embed into windows (c wrapper? no c#?)
+// [ ] Refactor to not need strings.
 
 use std::collections::{HashMap, VecDeque};
 use std::error::Error;
@@ -332,6 +334,7 @@ impl PinkyTwirlEngine {
             .clone();
         let event = KeyEvent {
             key: key_name,
+            code: key_code,
             state: if down { KeyState::Down } else { KeyState::Up },
             shift,
             ctrl,
@@ -339,7 +342,46 @@ impl PinkyTwirlEngine {
             meta,
         };
         let (suppress, synthetic_keys) = self.handle_key_event(event, app_name, window_name);
-        self.synthetic_keys = synthetic_keys;
+        
+        // Convert DownUp events to a Down event followed by an Up event.
+        self.synthetic_keys = synthetic_keys
+            .iter()
+            .flat_map(|key| match key.state {
+                KeyState::DownUp => vec![
+                    KeyEvent {
+                        key: key.key.clone(),
+                        code: key.code,
+                        state: KeyState::Down,
+                        shift: key.shift,
+                        ctrl: key.ctrl,
+                        alt: key.alt,
+                        meta: key.meta,
+                    },
+                    KeyEvent {
+                        key: key.key.clone(),
+                        code: key.code,
+                        state: KeyState::Up,
+                        shift: key.shift,
+                        ctrl: key.ctrl,
+                        alt: key.alt,
+                        meta: key.meta,
+                    },
+                ],
+                _ => vec![key.clone()],
+            })
+            .collect();
+        
+        // Add the macOS key code to the synthetic keys.
+        for key in &mut self.synthetic_keys {
+            key.code = self
+                .keycodes
+                .name_to_keycode
+                .get(&key.key)
+                .cloned()
+                .unwrap_or(0);
+        }
+
+        // Return whether the event should be suppressed.
         suppress
     }
 

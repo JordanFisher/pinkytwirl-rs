@@ -158,7 +158,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("shouldSuppress: \(shouldSuppress!)")        
         let synthetic_keys = engine?.get_synthetic_events()
         for i in 0..<synthetic_keys!.len() {
-            print("Synthetic key to generate \(i): \(synthetic_keys![i])")
+            let key = synthetic_keys![i]
+            print("Synthetic key to generate \(i): \(key)")
+            
+            if let synth = CGEvent(keyboardEventSource: nil, virtualKey: UInt16(key.code), keyDown: key.state == .Down) {
+                if key.shift {
+                    synth.flags.insert(.maskShift)
+                }
+                if key.control {
+                    synth.flags.insert(.maskControl)
+                }
+                if key.alt {
+                    synth.flags.insert(.maskAlternate)
+                }
+                if key.meta {
+                    synth.flags.insert(.maskCommand)
+                }
+                // Mark this event as synthetic so we can easily filter it out elsewhere.
+                synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
+                synth.post(tap: .cgSessionEventTap)
+            }
         }
 
         if shouldSuppress! {
