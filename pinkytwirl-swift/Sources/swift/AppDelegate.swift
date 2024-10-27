@@ -96,10 +96,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Get the title of the focused window.
         var windowTitle = "unknown"
         let appRef = AXUIElementCreateApplication(app.processIdentifier)
-        var windowRef: CFTypes?
+        var windowRef: CFTypeRef?
         let focusedWindow = AXUIElementCopyAttributeValue(appRef, kAXFocusedWindowAttribute as CFString, &windowRef)
         if focusedWindow == .success {
-            var titleRef: CFTypes?
+            var titleRef: CFTypeRef?
             let title = AXUIElementCopyAttributeValue(windowRef as! AXUIElement, kAXTitleAttribute as CFString, &titleRef)
             if title == .success {
                 windowTitle = titleRef as! String
