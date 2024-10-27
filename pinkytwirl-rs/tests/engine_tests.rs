@@ -64,7 +64,7 @@ fn test_context_matching() {
             "config.txt - Notepad++",
             Some("NotepadPlusPlus"),
         ),
-        ("unknown_app", "Unknown Window", None),
+        ("unknown_app", "Unknown Window", Some("Default")),
     ];
 
     for (app_name, window_name, expected_context) in test_cases {

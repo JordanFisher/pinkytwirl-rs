@@ -96,16 +96,20 @@ impl PinkyTwirlEngine {
 
         // Try exact match with app name
         exact_match(app_name)
-            // Then try exact match with window name
+            // Then try exact match with window name.
             .or_else(|| exact_match(window_name))
-            // Then try case-insensitive match with app name
+            // Then try case-insensitive match with app name.
             .or_else(|| case_insensitive_match(app_name))
-            // Then try case-insensitive match with window name
+            // Then try case-insensitive match with window name.
             .or_else(|| case_insensitive_match(window_name))
-            // Then try substring match with app name
+            // Then try substring match with app name.
             .or_else(|| substring_match(app_name))
-            // Finally, try substring match with window name
+            // Finally, try substring match with window name.
             .or_else(|| substring_match(window_name))
+            // Otherwise we should look for a "Default" or "default" context.
+            .or_else(|| self.contexts.get("Default"))
+            .or_else(|| self.contexts.get("default"))
+            .or_else(|| substring_match("default"))
     }
 
     pub fn print_config(&self) {

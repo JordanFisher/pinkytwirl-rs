@@ -23,7 +23,7 @@ CommandPrompt:
   parent: Default
 
 GitCommandPrompt:
-  aliases: ["Command Prompt"]
+  aliases: ["Git Command Prompt"]
   parent: Default
 
 Notepad:
