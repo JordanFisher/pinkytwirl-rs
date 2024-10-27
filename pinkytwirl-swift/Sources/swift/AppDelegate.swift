@@ -136,7 +136,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     flags.contains(.maskCommand),
                     appName,
                     windowTitle)
+                
                 print("Result: \(result!)")
+                // Result is a RustVec, print each element.
+                for i in 0..<result!.len() {
+                    print("Result \(i): \(result![i])")
+                }
 
             // case .flagsChanged:
             //     // This is when a modifier key is pressed or released.

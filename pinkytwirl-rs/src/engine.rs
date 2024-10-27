@@ -28,6 +28,7 @@ pub struct PinkyTwirlEngine {
     current_context: Option<String>,
     keycodes: crate::keycode_macos::KeyCodeLookup,
     pub startup: Result<(), Box<dyn Error>>,
+    debug_key_events: bool,
 }
 
 impl PinkyTwirlEngine {
@@ -39,6 +40,7 @@ impl PinkyTwirlEngine {
             current_context: None,
             keycodes: crate::keycode_macos::create_keycode_map(),
             startup: Ok(()),
+            debug_key_events: true,
         };
 
         engine.startup = engine.load_configurations();
@@ -131,13 +133,23 @@ impl PinkyTwirlEngine {
     ) -> Vec<KeyEvent> {
         let mut synthetic_events = Vec::new();
 
+        if self.debug_key_events {
+            println!(
+                "Engine key event: {} {:?} {} {} {}",
+                event.key, event.state, event.shift, event.ctrl, event.alt
+            );
+        }
+
         match event.state {
             KeyState::Down => {
                 self.pressed_keys.push_back(event.clone());
 
                 if let Some(context) = self.get_context(app_name, window_name) {
-                    dbg!(&self.pressed_keys);
-                    dbg!(&context.name);
+                    if self.debug_key_events {
+                        println!("Engine context: {}", context.name);
+                        println!("Engine pressed keys: {:?}", self.pressed_keys);
+                    }
+
                     if let Some(action) = self.find_chord_action(&context, &self.pressed_keys) {
                         synthetic_events = self.resolve_semantic_action(&action, context);
                         self.pressed_keys.clear();
