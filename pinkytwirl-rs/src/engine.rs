@@ -54,9 +54,17 @@ impl PinkyTwirlEngine {
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {
         let path = PathBuf::from(self.config_dir.clone());
 
+        // Get the path of the current executable.
+        let exe_path = std::env::current_exe()?;
+        println!("Current executable path: {:?}", exe_path);
+        // Set the current working directory to the directory of the executable.
+        let exe_dir = exe_path.parent().unwrap();
+        std::env::set_current_dir(exe_dir)?;
+
         // Print the current working directory.
         let cwd = std::env::current_dir()?;
         println!("Current working directory: {:?}", cwd);
+        println!("Loading configurations from: {:?}", path);
 
         // Fully resolve the path.
         let path = std::fs::canonicalize(path)?;
