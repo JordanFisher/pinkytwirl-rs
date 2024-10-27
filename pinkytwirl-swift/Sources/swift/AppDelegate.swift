@@ -126,26 +126,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Handle the event.
         switch type {
-            case .flagsChanged:
-                // This is when a modifier key is pressed or released.
-                // (Command, Shift, Option, Control, Caps Lock)
-                print("Flags changed")
-                // FIXME: Implement modifier key handling.
-
             case .keyDown:
-                if keyCode == 38 {
-                    if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: true) {
-                        synth.flags.insert([.maskShift, .maskAlternate])
-                        synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-                        synth.post(tap: .cgSessionEventTap)
-                    }
-                    if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: false) {
-                        synth.flags.insert([.maskShift, .maskAlternate])
-                        synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-                        synth.post(tap: .cgSessionEventTap)
-                    }
-                    return nil
-                }
+                let result = engine?.macos_handle_key_event(
+                    key_code: keyCode,
+                    down: true,
+                    shift: flags.contains(.maskShift),
+                    ctrl: flags.contains(.maskControl),
+                    option: flags.contains(.maskAlternate),
+                    meta: flags.contains(.maskCommand),
+                    app_name: &appName,
+                    window_name: &windowTitle,
+                );
+                print("Result: \(result!)")
+
+            // case .flagsChanged:
+            //     // This is when a modifier key is pressed or released.
+            //     // (Command, Shift, Option, Control, Caps Lock)
+            //     print("Flags changed")
+            //     // FIXME: Implement modifier key handling.
+
+            // case .keyDown:
+            //     if keyCode == 38 {
+            //         if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: true) {
+            //             synth.flags.insert([.maskShift, .maskAlternate])
+            //             synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
+            //             synth.post(tap: .cgSessionEventTap)
+            //         }
+            //         if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: false) {
+            //             synth.flags.insert([.maskShift, .maskAlternate])
+            //             synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
+            //             synth.post(tap: .cgSessionEventTap)
+            //         }
+            //         return nil
+            //     }
+
             default:
                 break
         }
