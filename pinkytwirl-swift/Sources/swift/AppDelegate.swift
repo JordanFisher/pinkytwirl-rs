@@ -128,15 +128,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         switch type {
             case .keyDown:
                 let result = engine?.macos_handle_key_event(
-                    key_code: keyCode,
-                    down: true,
-                    shift: flags.contains(.maskShift),
-                    ctrl: flags.contains(.maskControl),
-                    option: flags.contains(.maskAlternate),
-                    meta: flags.contains(.maskCommand),
-                    app_name: appName,
-                    window_name: windowTitle,
-                )
+                    keyCode,
+                    true,
+                    flags.contains(.maskShift),
+                    flags.contains(.maskControl),
+                    flags.contains(.maskAlternate),
+                    flags.contains(.maskCommand),
+                    appName,
+                    windowTitle)
                 print("Result: \(result!)")
 
             // case .flagsChanged:
