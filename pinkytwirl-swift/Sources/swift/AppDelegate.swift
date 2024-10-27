@@ -156,7 +156,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             windowTitle)
         
         print("shouldSuppress: \(shouldSuppress!)")        
-        let synthetic_keys = engine?.get_synthetic_keys()
+        let synthetic_keys = engine?.get_synthetic_events()
         for i in 0..<result!.len() {
             print("Synthetic key to generate \(i): \(result![i])")
         }
