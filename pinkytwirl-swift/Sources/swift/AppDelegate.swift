@@ -55,7 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupEventTap()
     }
 
-    private setupEventTap() {
+    private func setupEventTap() {
         let eventMask = (
             (1 << CGEventType.keyDown.rawValue) |
             (1 << CGEventType.keyUp.rawValue) |
@@ -85,7 +85,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("Event tap enabled")
     }
 
-    private getActiveWindowInfo() -> (appName: String, windowTitle: String, bundleId: String) {
+    private func getActiveWindowInfo() -> (appName: String, windowTitle: String, bundleId: String) {
         guard let app = NSWorkspace.shared.frontmostApplication else {
             return ("unknown", "unknown", "unknown")
         }
