@@ -22,7 +22,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
     }
 
-    private func toggleEnabled() {
+    @objc private func toggleEnabled() {
         if let eventTap = eventTap {
             let isEnabled = CGEvent.tapIsEnabled(tap: eventTap)
             CGEvent.tapEnable(tap: eventTap, enable: !isEnabled)
