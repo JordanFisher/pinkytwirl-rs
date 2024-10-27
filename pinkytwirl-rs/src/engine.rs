@@ -6,10 +6,12 @@
 // [x] State manager, input/output.
 // [x] copy from claude, but return a Vec<Key> instead of Vec<String>
 // [x] Basic tests with synthetic input/outputs.
-// [ ] Get FFI built
+// [ ] Get rest of FFI built and initial cycling
 // [ ] Returns flag for whether to pass through the event or not?
 // [ ] Keep chord active while pressed.
-// [ ] Embed into macOS
+// [x] Embed into macOS
+// [ ] chrome tab + desktop window switching, most recent, etc
+// [ ] text suggestion, find location of cursor, etc
 // [ ] Embed into windows
 
 use std::collections::{HashMap, VecDeque};
