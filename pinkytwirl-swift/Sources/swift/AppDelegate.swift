@@ -124,12 +124,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Debug print the event.
         print("Event: \(type) \(keyCode) \(flags) \(appName) \(windowTitle) \(bundleId)")
 
+        if type == .flagsChanged {
+            // This is when a modifier key is pressed or released.
+            // We want to figure out if this is a key down or key up event.
+            // We can do this by checking the current state of the key.
+            let isKeyDown = (
+                // Left side modifier keys.
+                flags.contains(.maskCommand) && keyCode == 55 ||
+                flags.contains(.maskControl) && keyCode == 59 ||
+                flags.contains(.maskShift) && keyCode == 56 ||
+                flags.contains(.maskAlternate) && keyCode == 58 ||
+                // Right side modifier keys.
+                flags.contains(.maskCommand) && keyCode == 54 ||
+                flags.contains(.maskControl) && keyCode == 62 ||
+                flags.contains(.maskShift) && keyCode == 60 ||
+                flags.contains(.maskAlternate) && keyCode == 61)
+            if isKeyDown {
+                type = .keyDown
+            } else {
+                type = .keyUp
+            }
+        }
+
         // Handle the event.
         switch type {
             case .keyDown:
+            case .keyUp:
                 let shouldSuppress = engine?.macos_handle_key_event(
                     keyCode,
-                    true,
+                    type == .keyDown,
                     flags.contains(.maskShift),
                     flags.contains(.maskControl),
                     flags.contains(.maskAlternate),
@@ -144,12 +167,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                         print("Synthetic key to generate \(i): \(result![i])")
                     }
                 }
-
-            // case .flagsChanged:
-            //     // This is when a modifier key is pressed or released.
-            //     // (Command, Shift, Option, Control, Caps Lock)
-            //     print("Flags changed")
-            //     // FIXME: Implement modifier key handling.
 
             // case .keyDown:
             //     if keyCode == 38 {
