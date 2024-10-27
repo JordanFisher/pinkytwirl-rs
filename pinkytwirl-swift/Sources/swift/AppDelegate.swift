@@ -147,26 +147,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Handle the event.
-        switch type {
-            case .keyDown:
-            case .keyUp:
-                let shouldSuppress = engine?.macos_handle_key_event(
-                    keyCode,
-                    type == .keyDown,
-                    flags.contains(.maskShift),
-                    flags.contains(.maskControl),
-                    flags.contains(.maskAlternate),
-                    flags.contains(.maskCommand),
-                    appName,
-                    windowTitle)
-                
-                print("shouldSuppress: \(shouldSuppress!)")
-                if shouldSuppress! {
-                    let synthetic_keys = engine?.get_synthetic_keys()
-                    for i in 0..<result!.len() {
-                        print("Synthetic key to generate \(i): \(result![i])")
-                    }
-                }
+        let shouldSuppress = engine?.macos_handle_key_event(
+            keyCode,
+            type == .keyDown,
+            flags.contains(.maskShift),
+            flags.contains(.maskControl),
+            flags.contains(.maskAlternate),
+            flags.contains(.maskCommand),
+            appName,
+            windowTitle)
+        
+        print("shouldSuppress: \(shouldSuppress!)")        
+        let synthetic_keys = engine?.get_synthetic_keys()
+        for i in 0..<result!.len() {
+            print("Synthetic key to generate \(i): \(result![i])")
+        }
+
+        if shouldSuppress! {
+            return nil
+        } else {
+            return Unmanaged.passRetained(event)
+        }
 
             // case .keyDown:
             //     if keyCode == 38 {
@@ -182,11 +183,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             //         }
             //         return nil
             //     }
-
-            default:
-                break
-        }
-    
-        return Unmanaged.passRetained(event)
     }
 }
