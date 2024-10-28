@@ -160,22 +160,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         for i in 0..<synthetic_keys!.len() {
             let key = synthetic_keys![i]
             print("Synthetic key to generate \(i): \(key)")
-            print("\(key?.code())")
-            print("\(key?.code)")
-            print("\(key.code())")
-            print("\(key.code)")
+            print("\(key.get_code())")
+            print("\(key?.get_code)")
 
-            if let synth = CGEvent(keyboardEventSource: nil, virtualKey: UInt16(0), keyDown: key.state() == .Down) {
-                if key.shift() {
+            if let synth = CGEvent(keyboardEventSource: nil, virtualKey: UInt16(0), keyDown: key.is_down()) {
+                if key.get_shift() {
                     synth.flags.insert([.maskShift])
                 }
-                if key.control() {
+                if key.get_control() {
                     synth.flags.insert([.maskControl])
                 }
-                if key.alt() {
+                if key.get_alt() {
                     synth.flags.insert([.maskAlternate])
                 }
-                if key.meta() {
+                if key.get_meta() {
                     synth.flags.insert([.maskCommand])
                 }
                 // Mark this event as synthetic so we can easily filter it out elsewhere.
