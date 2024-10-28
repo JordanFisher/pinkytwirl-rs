@@ -13,7 +13,9 @@
 //     [x] Flag for once only mappings should be applied until full reset. Force reset on meta up.
 //     [x] Returns flag for whether to pass through the event or not.
 //     [x] Key down from meta.
-//     [ ] Generate actual key events on macOS.
+//     [x] Generate actual key events on macOS.
+//     [ ] Get 3/4 working
+//     [ ] Get prev/next word working
 //     [ ] Get meta+tab working (queue up actual key events?)
 //     [ ] Get meta+space+j working
 // [ ] Add README and MIT license
