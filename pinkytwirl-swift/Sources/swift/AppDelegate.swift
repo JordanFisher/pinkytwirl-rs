@@ -160,6 +160,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         for i in 0..<synthetic_keys!.len() {
             let key = synthetic_keys![i]
             print("Synthetic key to generate \(i): \(key)")
+            print("\(key?.code())")
+            print("\(key?.code)")
+            print("\(key.code())")
+            print("\(key.code)")
 
             if let synth = CGEvent(keyboardEventSource: nil, virtualKey: UInt16(0), keyDown: key.state() == .Down) {
                 if key.shift() {
