@@ -24,8 +24,8 @@ Default:
     SelectEnd = Shift + End
     SelectPageUp = Shift + PageUp
     SelectPageDown = Shift + PageDown
-    SelectNextWord = Shift + NavNextWord
-    SelectPreviousWord = Shift + NavPreviousWord
+    SelectNextWord = Shift + Alt + Right
+    SelectPreviousWord = Shift + Alt + Left
     SelectBigUp = Shift + NavBigUp
     SelectBigDown = Shift + NavBigDown
     SelectTop = Shift + NavTop

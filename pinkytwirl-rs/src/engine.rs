@@ -15,8 +15,8 @@
 //     [x] Key down from meta.
 //     [x] Generate actual key events on macOS.
 //     [x] Get 3/4 working
-//     [ ] Get prev/next word working
-//     [ ] Get undo/redo working
+//     [x] Get prev/next word working
+//     [x] Get undo/redo working
 //     [ ] Reset shift on stem change?
 //     [ ] Get meta+tab working (queue up actual key events?)
 //     [ ] Get meta+space+j working
@@ -300,7 +300,7 @@ impl PinkyTwirlEngine {
     }
 
     fn resolve_semantic_action(&self, action: &SemanticAction, context: &Context) -> Vec<KeyEvent> {
-        // dbg!(&action);
+        dbg!(&action);
         match action {
             SemanticAction::Sequence(actions) => actions
                 .iter()

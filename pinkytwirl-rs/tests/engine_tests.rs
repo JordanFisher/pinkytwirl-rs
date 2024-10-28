@@ -129,15 +129,15 @@ fn test_chord_resolution_nav_left() {
 }
 
 #[test]
-fn test_chord_resolution_select_left() {
+fn test_chord_resolution_select_left_word() {
     // Meta + J -> Left
     let mut engine = get_engine();
 
     let chord_sequence = vec![
         // Key event, expected to suppress, expected number of pressed keys.
         (key_down("d4"), true, 1),
-        (key_down("d4 + j"), true, 1),
-        (key_up("d4 + j"), false, 1),
+        (key_down("d4 + m"), true, 1),
+        (key_up("d4 + m"), false, 1),
         (key_up("d4"), false, 0),
     ];
 
@@ -151,6 +151,8 @@ fn test_chord_resolution_select_left() {
             }
             assert_eq!(engine.pressed_keys.len(), *expected_pressed_keys, "Number of keys still pressed is wrong [iteration {}]", i);
             assert_eq!(suppress, *expected_suppress, "Key event suppression is wrong [iteration {}]", i);
+            println!();
+            dbg!(synthetic_events);
         }
 
         assert!(
