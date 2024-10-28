@@ -161,7 +161,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let key = synthetic_keys![i]
             print("Synthetic key to generate \(i): \(key) \(key.get_code())")
 
-            if let synth = CGEvent(keyboardEventSource: nil, virtualKey: UInt16(0), keyDown: key.is_down()) {
+            if let synth = CGEvent(keyboardEventSource: nil, virtualKey: UInt16(key.get_code()), keyDown: key.is_down()) {
                 if key.get_shift() {
                     synth.flags.insert([.maskShift])
                 }
