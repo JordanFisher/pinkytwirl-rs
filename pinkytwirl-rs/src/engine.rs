@@ -17,9 +17,12 @@
 //     [x] Get 3/4 working
 //     [x] Get prev/next word working
 //     [x] Get undo/redo working
-//     [ ] Reset shift on stem change?
+//     [ ] Reset shift on stem change? Or up-event all meta keys on Command down
+                   // (do this just in the mac app shim)
+//     [ ] X + 2 * Y, need to resolve this better if X or Y aren't keys
 //     [ ] Get meta+tab working (queue up actual key events?)
 //     [ ] Get meta+space+j working
+//     [ ] Page up/page down
 // [ ] Add README and MIT license
 // [x] Embed into macOS
 // [ ] chrome tab + desktop window switching, most recent, etc
@@ -394,6 +397,19 @@ impl PinkyTwirlEngine {
                 .get(&key.key)
                 .cloned()
                 .unwrap_or(0);
+        }
+
+        // Add a shift up.
+        if suppress {
+            self.synthetic_keys.push(KeyEvent {
+                key: "shift".to_string(),
+                code: self.keycodes.name_to_keycode.get("shift").cloned().unwrap_or(0),
+                state: KeyState::Up,
+                shift: false,
+                ctrl: false,
+                alt: false,
+                meta: false,
+            });
         }
 
         // Return whether the event should be suppressed.
