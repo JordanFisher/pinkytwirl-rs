@@ -30,6 +30,32 @@ pub struct KeyEvent {
     pub meta: bool,
 }
 
+impl KeyEvent {
+    pub fn get_code(&self) -> i64 {
+        self.code
+    }
+
+    pub fn is_down(&self) -> bool {
+        self.state == KeyState::Down || self.state == KeyState::DownUp
+    }
+
+    pub fn get_shift(&self) -> bool {
+        self.shift
+    }
+
+    pub fn get_ctrl(&self) -> bool {
+        self.ctrl
+    }
+
+    pub fn get_alt(&self) -> bool {
+        self.alt
+    }
+
+    pub fn get_meta(&self) -> bool {
+        self.meta
+    }
+}
+
 impl fmt::Display for KeyEvent {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut modifiers = Vec::new();

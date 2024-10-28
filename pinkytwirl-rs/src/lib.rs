@@ -10,20 +10,15 @@ pub use crate::engine::PinkyTwirlEngine;
 
 #[swift_bridge::bridge]
 mod ff {
-    #[swift_bridge(already_declared, swift_repr = "struct")]
-    struct KeyEvent;
-
     extern "Rust" {
-        // type KeyEvent;
+        type KeyEvent;
 
-        // fn key(self: &KeyEvent) -> &str;
-        // fn get_code(self: &KeyEvent) -> i64;
-        // fn state(self: &KeyEvent) -> &KeyState;
-        // fn shift(self: &KeyEvent) -> bool;
-        // fn ctrl(self: &KeyEvent) -> bool;
-        // fn alt(self: &KeyEvent) -> bool;        
-        // fn meta(self: &KeyEvent) -> bool;
-        // fn is_down(self: &KeyState) -> bool;
+        fn get_code(self: &KeyEvent) -> i64;
+        fn is_down(self: &KeyEvent) -> bool;
+        fn get_shift(self: &KeyEvent) -> bool;
+        fn get_ctrl(self: &KeyEvent) -> bool;
+        fn get_alt(self: &KeyEvent) -> bool;
+        fn get_meta(self: &KeyEvent) -> bool;
     }
 
     extern "Rust" {
