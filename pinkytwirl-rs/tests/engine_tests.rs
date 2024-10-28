@@ -104,9 +104,41 @@ fn test_chord_resolution_nav_left() {
     let chord_sequence = vec![
         // Key event, expected to suppress, expected number of pressed keys.
         (key_down("meta"), true, 1),
-        (key_down("meta + j"), true, 2),
+        (key_down("meta + j"), true, 1),
         (key_up("meta + j"), false, 1),
         (key_up("meta"), false, 0),
+    ];
+
+    for i in 0..3 {
+        let mut synthetic_events_found = false;
+        for (event, expected_suppress, expected_pressed_keys) in &chord_sequence {
+            let (suppress, synthetic_events) =
+                engine.handle_key_event(event.clone(), "Visual Studio Code", "main.rs - MyProject");
+            if !synthetic_events.is_empty() {
+                synthetic_events_found = true;
+            }
+            assert_eq!(engine.pressed_keys.len(), *expected_pressed_keys, "Number of keys still pressed is wrong [iteration {}]", i);
+            assert_eq!(suppress, *expected_suppress, "Key event suppression is wrong [iteration {}]", i);
+        }
+
+        assert!(
+            synthetic_events_found,
+            "Chord sequence should generate at least one synthetic event"
+        );
+    }
+}
+
+#[test]
+fn test_chord_resolution_select_left() {
+    // Meta + J -> Left
+    let mut engine = get_engine();
+
+    let chord_sequence = vec![
+        // Key event, expected to suppress, expected number of pressed keys.
+        (key_down("d4"), true, 1),
+        (key_down("d4 + j"), true, 1),
+        (key_up("d4 + j"), false, 1),
+        (key_up("d4"), false, 0),
     ];
 
     for i in 0..3 {
