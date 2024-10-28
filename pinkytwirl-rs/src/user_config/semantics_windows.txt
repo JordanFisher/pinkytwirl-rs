@@ -1,0 +1,160 @@
+Default:
+    // Text navigation
+    NavLeft = Left
+    NavRight = Right
+    NavUp = Up
+    NavDown = Down
+    NavHome = Home
+    NavEnd = End
+    NavPageUp = PageUp
+    NavPageDown = PageDown
+    NavNextWord = Alt + Right
+    NavPreviousWord = Alt + Left
+    NavBigUp = 12 * Up
+    NavBigDown = 12 * Down
+    NavTop = Meta + Up
+    NavBottom = Meta + Down
+
+    // Text selection
+    SelectLeft = Shift + Left
+    SelectRight = Shift + Right
+    SelectUp = Shift + Up
+    SelectDown = Shift + Down
+    SelectHome = Shift + Home
+    SelectEnd = Shift + End
+    SelectPageUp = Shift + PageUp
+    SelectPageDown = Shift + PageDown
+    SelectNextWord = Shift + NavNextWord
+    SelectPreviousWord = Shift + NavPreviousWord
+    SelectBigUp = Shift + NavBigUp
+    SelectBigDown = Shift + NavBigDown
+    SelectTop = Shift + NavTop
+    SelectBottom = Shift + NavBottom
+
+    // Text deletion
+    DeleteLine = Home | Home | Shift + End | Delete
+    DeleteLeft = Backspace
+    DeleteRight = Delete
+    DeleteUp = NavUp | DeleteLine
+    DeleteDown = NavDown | DeleteLine
+    DeleteHome = SelectHome | Delete
+    DeleteEnd = SelectEnd | Delete
+    DeletePageUp = SelectPageUp | Delete
+    DeletePageDown = SelectPageDown | Delete
+    DeleteNextWord = SelectNextWord | Delete
+    DeletePreviousWord = SelectPreviousWord | Delete
+    DeleteBigUp = SelectBigUp | Delete
+    DeleteBigDown = SelectBigDown | Delete
+    DeleteTop = SelectTop | Delete
+    DeleteBottom = SelectBottom | Delete
+
+    // Text action
+    Cut = Meta + X
+    Copy = Meta + C
+    Paste = Meta + V
+    InsertLine = Up | End | Enter
+    Rewrap = Alt + M
+
+    // Search/replace
+    Search = Meta + F
+    SearchAll = Meta + F
+    Replace = Meta + H
+
+    // State
+    Undo = Meta + Z
+    Redo = Meta + Y
+
+    // Navigate
+    AddressBar = Alt + D
+    Focus = AddressBar | F6 | F6 | F6
+    ProgramTab = StartAltTab
+    FileTabLeft = Ctrl + Tab
+    FileTabRight = Shift + Ctrl + Tab
+    Menu = Alt
+
+    // File actions
+    Save = Meta + S
+    SaveAs = Meta + Alt + S
+    SaveAll = Meta + Shift + S
+    Close = Meta + Semicolon
+    CloseAllBut = Meta + Shift + Semicolon
+    FormatDoc = Shift + Alt + F
+
+    // Brower
+    NewTab = Meta + T
+    CloseTab = Meta + W
+    SearchTabs = 6 * Escape | Meta + K
+
+    // Application
+    Fullscreen = F11
+    EndApplication = Alt + F4
+
+    // Console
+    ClearScreen = Ctrl + L
+    Break = Ctrl + C
+    KillAllPythonCmd = DeleteLine | "ps -ef | grep $USER | grep python | grep -v grep | grep -v vscode | awk '{print $2}' | xargs -r kill -9"
+    KillAllPython = KillAllPythonCmd | Home | 27 * Right
+
+    // tmux
+    PaneLeft = Ctrl + B | Left
+    PaneRight = Ctrl + B | Right
+    PaneUp = Ctrl + B | Up
+    PaneDown = Ctrl + B | Down
+    PaneSyncOn = Ctrl + B | ":" | "setw synchronize-panes on" | Enter
+    PaneSyncOff = Ctrl + B | ":" | "setw synchronize-panes off" | Enter
+    PaneNew = Ctrl + B | Shift + D5
+    PaneKill = Ctrl + B | X | Y
+    PaneArrange = Ctrl + B | Alt + D5
+    PaneBig = Ctrl + B | Z
+
+    // git
+    GitStatus     = DeleteLine | "clear ; git status -- \"******\"" | 4 * Left
+    GitDiff       = DeleteLine | "clear ; git diff -- \"******\"" | 4 * Left
+    GitAdd        = DeleteLine | "clear ; git add -- \"******\" ; git status" | 17 * Left
+    GitCommit     = DeleteLine | "git commit -m\"\"" | Left
+    GitPush       = DeleteLine | "git push origin "
+    GitReset      = DeleteLine | "git reset ; clear ; git status"
+    GitResetHard  = DeleteLine | "git reset --hard HEAD ; clear ; git status"
+    ReverseSearch = Ctrl + R
+
+    // Split plane IDE
+    SelectPanel1 = Alt + Tab | 5 * Escape | Break | Escape |    Break
+    SelectPanel2 = SelectPanel1
+    SelectPanel3 = Ctrl + D3
+
+    ExecuteLastCommand          = ClearScreen | Up | Enter
+    SwitchAndExecuteLastCommand = Save | SelectPanel2 | ExecuteLastCommand
+    SwitchAndBreak              = SelectPanel2 | Break | SelectPanel1
+
+VSCode:
+    SearchAll                 = Meta + Shift + F
+    Close                     = Meta + W
+    ViewProjectExplorer       = Meta + Shift + E
+    CloseAllTools             = Meta + B
+    FindFile                  = Meta + E
+    ViewErrorList             = Meta + Shift + M
+    Fullscreen                = Meta + K | Z
+    GotoDefinition            = F12
+    ViewOutput                = Meta + Shift + U
+    ViewDebugConsole          = Meta + Shift + Y
+    ViewTerminal              = Meta + Tilde
+    Comment                   = Meta + Question
+    Uncomment                 = Meta + K | Meta + U
+    ClearScreen               = Meta + L
+
+Excel:
+    DeleteLine = Shift + Space | Ctrl + Minus
+    InsertLine = Shift + Space | Ctrl + Plus
+
+Chrome:
+    AddressBar = Meta + L
+    Focus      = AddressBar | F6
+    NewTab     = Meta + T
+    CloseTab   = Meta + W
+    Fullscreen = F11
+
+Firefox:
+    AddressBar = Meta + L
+    NewTab     = Meta + T
+    CloseTab   = Meta + W
+    Fullscreen = F11

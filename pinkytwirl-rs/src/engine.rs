@@ -14,8 +14,10 @@
 //     [x] Returns flag for whether to pass through the event or not.
 //     [x] Key down from meta.
 //     [x] Generate actual key events on macOS.
-//     [ ] Get 3/4 working
+//     [x] Get 3/4 working
 //     [ ] Get prev/next word working
+//     [ ] Get undo/redo working
+//     [ ] Reset shift on stem change?
 //     [ ] Get meta+tab working (queue up actual key events?)
 //     [ ] Get meta+space+j working
 // [ ] Add README and MIT license
@@ -101,7 +103,7 @@ impl PinkyTwirlEngine {
         println!("Loading contexts from: {:?}", contexts_path);
         self.contexts = crate::contexts::parse_yaml_file(&contexts_path)?;
 
-        let semantics_path = path.join("semantics.txt");
+        let semantics_path = path.join("semantics_macos.txt");
         println!("Loading semantics from: {:?}", semantics_path);
         crate::semantics::parse_semantics_file(
             &semantics_path,
