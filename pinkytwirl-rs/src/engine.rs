@@ -207,32 +207,16 @@ impl PinkyTwirlEngine {
                     return (false, Vec::new());
                 }
 
-                if let Some(context) = self.get_context(app_name, window_name) {
+                let action = if let Some(context) = self.get_context(app_name, window_name) {
                     if self.debug_key_events {
                         println!("Engine context: {}", context.name);
                         println!("Engine pressed keys: {:?}", self.pressed_keys);
                     }
 
                     if let Some(action) = self.find_chord_action(&context, &self.pressed_keys) {
-                        // There is a mapping for the current chord, so we will suppress the
-                        // key events and play back the synthetic events instead. We will stay
-                        // in this mode until all keys are released.
-                        let synthetic_events = self.resolve_semantic_action(&action, context);
-                        self.only_mappings_until_reset = true;
-                        return (true, synthetic_events);
-                    } else if self.pressed_keys.len() == 1 {
-                        // If it's the first key and doesn't match any chord, let it through.
-                        self.no_mapping_until_reset = true;
-                        return (false, Vec::new());
+                        Some(action)
                     } else {
-                        // If it doesn't match any chord, play back the buffered keys, unless we're in a state where only mappings should be applied.
-                        if self.only_mappings_until_reset {
-                            return (true, Vec::new());
-                        } else {
-                            let synthetic_events = self.pressed_keys.iter().cloned().collect();
-                            self.no_mapping_until_reset = true;
-                            return (false, synthetic_events);
-                        }
+                        None
                     }
                 } else {
                     if self.debug_key_events {
@@ -241,6 +225,33 @@ impl PinkyTwirlEngine {
 
                     // If no context is found, let the key through
                     return (false, Vec::new());
+                };
+
+                if let Some(action) = action {
+                    if action != SemanticAction::Action("MappingStem".to_string()) {
+                        // We have a real action, we don't want to consider this key part of the stem.
+                        self.pressed_keys.retain(|k| &k.key != &event.key);
+                    }
+                    // There is a mapping for the current chord, so we will suppress the
+                    // key events and play back the synthetic events instead. We will stay
+                    // in this mode until all keys are released.
+                    let context = self.get_context(app_name, window_name).unwrap();
+                    let synthetic_events = self.resolve_semantic_action(&action, context);
+                    self.only_mappings_until_reset = true;
+                    return (true, synthetic_events);
+                } else if self.pressed_keys.len() == 1 {
+                    // If it's the first key and doesn't match any chord, let it through.
+                    self.no_mapping_until_reset = true;
+                    return (false, Vec::new());
+                } else {
+                    // If it doesn't match any chord, play back the buffered keys, unless we're in a state where only mappings should be applied.
+                    if self.only_mappings_until_reset {
+                        return (true, Vec::new());
+                    } else {
+                        let synthetic_events = self.pressed_keys.iter().cloned().collect();
+                        self.no_mapping_until_reset = true;
+                        return (false, synthetic_events);
+                    }
                 }
             }
             KeyState::Up => {

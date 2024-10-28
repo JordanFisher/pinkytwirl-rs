@@ -19,7 +19,7 @@ pub enum KeyState {
     DownUp,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct KeyEvent {
     pub key: String,
     pub code: i64,
@@ -121,7 +121,7 @@ pub fn key_press(s: &str) -> KeyEvent {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SemanticAction {
     Sequence(Vec<SemanticAction>),
     Action(String),
