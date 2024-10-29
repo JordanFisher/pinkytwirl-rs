@@ -131,7 +131,7 @@ VSCode:
     Close                     = Meta + W
     ViewProjectExplorer       = Meta + Shift + E
     CloseAllTools             = Meta + B
-    FindFile                  = Meta + E
+    FindFile                  = Meta + P
     ViewErrorList             = Meta + Shift + M
     Fullscreen                = Meta + K | Z
     GotoDefinition            = F12
