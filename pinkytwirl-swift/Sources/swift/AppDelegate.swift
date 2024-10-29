@@ -179,7 +179,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 // Mark this event as synthetic so we can easily filter it out elsewhere.
                 synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-                synth.post(tap: .cgSessionEventTap)
+                // synth.post(tap: .cgSessionEventTap)
+                synth.post(tap: .cghidEventTap)
             }
         }
 

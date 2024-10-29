@@ -67,7 +67,7 @@ Default:
     // Navigate
     AddressBar = Alt + D
     Focus = AddressBar | F6 | F6 | F6
-    ProgramTab = StartAltTab
+    ProgramTab = MetaDown + Tab
     FileTabLeft = Ctrl + Tab
     FileTabRight = Shift + Ctrl + Tab
     Menu = Alt
