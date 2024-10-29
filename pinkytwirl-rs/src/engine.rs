@@ -261,8 +261,9 @@ impl PinkyTwirlEngine {
                         return (true, Vec::new());
                     } else {
                         let synthetic_events = self.pressed_keys.iter().cloned().collect();
-                        self.no_mapping_until_reset = true;
-                        return (false, synthetic_events);
+                        // self.no_mapping_until_reset = true;
+                        self.reset();
+                        return (true, synthetic_events);
                     }
                 }
             }
