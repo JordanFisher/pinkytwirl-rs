@@ -180,6 +180,7 @@ Browser:
 
     Meta + Space:
         J = SearchTabs
+        K = SearchTabs
 
 // PowerShell git map
 GitCommandPrompt:

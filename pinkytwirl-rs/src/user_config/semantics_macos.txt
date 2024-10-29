@@ -83,7 +83,8 @@ Default:
     // Brower
     NewTab = Meta + T
     CloseTab = Meta + W
-    SearchTabs = 6 * Escape | Meta + K
+    //SearchTabs = 6 * Escape | Meta + K
+    SearchTabs = Meta + Shift + A
 
     // Application
     Fullscreen = F11
