@@ -19,6 +19,7 @@ mod ff {
         fn get_ctrl(self: &KeyEvent) -> bool;
         fn get_alt(self: &KeyEvent) -> bool;
         fn get_meta(self: &KeyEvent) -> bool;
+        fn get_fn(self: &KeyEvent) -> bool;
     }
 
     extern "Rust" {
