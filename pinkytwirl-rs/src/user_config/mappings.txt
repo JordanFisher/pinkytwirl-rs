@@ -37,7 +37,7 @@ Default:
 
         V = Rewrap
 
-        Tab = ProgramTab
+        // Tab = ProgramTab
         F4  = EndApplication
 
     D4:
