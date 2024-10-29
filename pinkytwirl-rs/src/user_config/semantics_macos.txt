@@ -4,8 +4,8 @@ Default:
     NavRight = Right
     NavUp = Up
     NavDown = Down
-    NavHome = Home
-    NavEnd = End
+    NavHome = Meta + Left
+    NavEnd = Meta + Right
     NavPageUp = PageUp
     NavPageDown = PageDown
     NavNextWord = Alt + Right
@@ -20,8 +20,8 @@ Default:
     SelectRight = Shift + Right
     SelectUp = Shift + Up
     SelectDown = Shift + Down
-    SelectHome = Shift + Home
-    SelectEnd = Shift + End
+    SelectHome = Shift + Meta + Left
+    SelectEnd = Shift + Meta + Right
     SelectPageUp = Shift + PageUp
     SelectPageDown = Shift + PageDown
     SelectNextWord = Shift + Alt + Right

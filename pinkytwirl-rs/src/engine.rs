@@ -20,7 +20,8 @@
 //     [ ] Reset shift on stem change? Or up-event all meta keys on Command down
                    // (do this just in the mac app shim)
 //     [ ] X + 2 * Y, need to resolve this better if X or Y aren't keys
-//     [ ] Get meta+tab working (queue up actual key events?)
+//     [ ] Get meta+tab working (queue up actual key events?), and 3/4
+//     [ ] Caps lock keys
 //     [ ] Get meta+space+j working
 //     [ ] Page up/page down
 // [ ] Add README and MIT license
