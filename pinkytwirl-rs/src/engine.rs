@@ -46,6 +46,7 @@ pub struct PinkyTwirlEngine {
 
     no_mapping_until_reset: bool,
     only_mappings_until_reset: bool,
+    has_generated_synthetic_keys: bool,
     synthetic_keys: Vec<KeyEvent>,
 
     pub startup: Result<(), Box<dyn Error>>,
@@ -63,6 +64,7 @@ impl PinkyTwirlEngine {
 
             no_mapping_until_reset: false,
             only_mappings_until_reset: false,
+            has_generated_synthetic_keys: false,
             synthetic_keys: Vec::new(),
 
             startup: Ok(()),
@@ -82,6 +84,7 @@ impl PinkyTwirlEngine {
         self.current_context = None;
         self.no_mapping_until_reset = false;
         self.only_mappings_until_reset = false;
+        self.has_generated_synthetic_keys = false;
     }
 
     pub fn load_configurations(&mut self) -> Result<(), Box<dyn Error>> {
@@ -239,6 +242,7 @@ impl PinkyTwirlEngine {
                     if action != SemanticAction::Action("MappingStem".to_string()) {
                         // We have a real action, we don't want to consider this key part of the stem.
                         self.pressed_keys.retain(|k| &k.key != &event.key);
+                        self.has_generated_synthetic_keys = true;
                     }
                     // There is a mapping for the current chord, so we will suppress the
                     // key events and play back the synthetic events instead. We will stay
@@ -263,11 +267,20 @@ impl PinkyTwirlEngine {
                 }
             }
             KeyState::Up => {
-                self.pressed_keys.retain(|k| &k.key != &event.key);
-                if event.key == "meta" || self.pressed_keys.is_empty() {
-                    self.reset();
-                }
-                return (false, Vec::new());
+                if self.only_mappings_until_reset && !self.has_generated_synthetic_keys && !self.pressed_keys.is_empty() {
+                    let synthetic_events = self.pressed_keys.iter().cloned().collect();
+                    self.pressed_keys.clear();
+                    if event.key == "meta" {
+                        self.reset();
+                    }
+                    return (false, synthetic_events);    
+                } else {
+                    self.pressed_keys.retain(|k| &k.key != &event.key);
+                    if event.key == "meta" || self.pressed_keys.is_empty() {
+                        self.reset();
+                    }
+                    return (false, Vec::new());
+                };
             }
             KeyState::DownUp => {
                 return (false, Vec::new());

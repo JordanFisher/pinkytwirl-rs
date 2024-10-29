@@ -179,6 +179,7 @@ fn test_chord_resolution_letter_l() {
             let (suppress, synthetic_events) =
                 engine.handle_key_event(event.clone(), "Visual Studio Code", "main.rs - MyProject");
             if !synthetic_events.is_empty() {
+                dbg!(synthetic_events);
                 synthetic_events_found = true;
             }
             assert_eq!(engine.pressed_keys.len(), *expected_pressed_keys, "Number of keys still pressed is wrong [iteration {}]", i);
@@ -191,6 +192,40 @@ fn test_chord_resolution_letter_l() {
         assert!(
             !synthetic_events_found,
             "There should be no synthetic events for a single key press of 'L' [iteration {}]",
+            i
+        );
+    }
+}
+
+#[test]
+fn test_chord_resolution_number_key_4() {
+    // 4 -> 4  (maybe a chord, but turns out not to be)
+    let mut engine = get_engine();
+
+    let chord_sequence = vec![
+        // Key event, expected to suppress, expected number of pressed keys.
+        (key_down("d4"), true, 1),
+        (key_up("d4"), false, 0),
+    ];
+
+    for i in 0..3 {
+        let mut synthetic_events_found = false;
+        for (event, expected_suppress, expected_pressed_keys) in &chord_sequence {
+            let (suppress, synthetic_events) =
+                engine.handle_key_event(event.clone(), "Visual Studio Code", "main.rs - MyProject");
+            if !synthetic_events.is_empty() {
+                synthetic_events_found = true;
+            }
+            assert_eq!(engine.pressed_keys.len(), *expected_pressed_keys, "Number of keys still pressed is wrong [iteration {}]", i);
+            assert_eq!(suppress, *expected_suppress, "Key event suppression is wrong [iteration {}]", i);
+        }
+
+        println!("{:?}", engine.pressed_keys);
+        assert!(engine.pressed_keys.is_empty(), "Pressed keys should be empty [iteration {}]", i);
+
+        assert!(
+            synthetic_events_found,
+            "There *should* be synthetic events for a single key press of '4' [iteration {}]",
             i
         );
     }
