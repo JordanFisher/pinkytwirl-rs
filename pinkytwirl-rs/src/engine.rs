@@ -372,6 +372,7 @@ impl PinkyTwirlEngine {
             ctrl,
             alt: option,
             meta,
+            func: false,
         };
         let (suppress, synthetic_keys) = self.handle_key_event(event, app_name, window_name);
         
@@ -388,6 +389,7 @@ impl PinkyTwirlEngine {
                         ctrl: key.ctrl,
                         alt: key.alt,
                         meta: key.meta,
+                        func: key.func,
                     },
                     KeyEvent {
                         key: key.key.clone(),
@@ -397,6 +399,7 @@ impl PinkyTwirlEngine {
                         ctrl: key.ctrl,
                         alt: key.alt,
                         meta: key.meta,
+                        func: key.func,
                     },
                 ],
                 _ => vec![key.clone()],
@@ -423,6 +426,7 @@ impl PinkyTwirlEngine {
                 ctrl: false,
                 alt: false,
                 meta: false,
+                func: false,
             });
         }
 

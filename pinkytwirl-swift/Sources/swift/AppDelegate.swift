@@ -174,6 +174,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if key.get_meta() {
                     synth.flags.insert([.maskCommand])
                 }
+                if key.get_fn() {
+                    synth.flags.insert([.maskSecondaryFn])
+                }
                 // Mark this event as synthetic so we can easily filter it out elsewhere.
                 synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
                 synth.post(tap: .cgSessionEventTap)

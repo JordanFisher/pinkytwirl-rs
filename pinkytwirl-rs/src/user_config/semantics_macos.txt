@@ -6,8 +6,8 @@ Default:
     NavDown = Down
     NavHome = Meta + Left
     NavEnd = Meta + Right
-    NavPageUp = PageUp
-    NavPageDown = PageDown
+    NavPageUp = Fn + Up
+    NavPageDown = Fn + Down
     NavNextWord = Alt + Right
     NavPreviousWord = Alt + Left
     NavBigUp = 12 * Up
@@ -22,8 +22,8 @@ Default:
     SelectDown = Shift + Down
     SelectHome = Shift + Meta + Left
     SelectEnd = Shift + Meta + Right
-    SelectPageUp = Shift + PageUp
-    SelectPageDown = Shift + PageDown
+    SelectPageUp = Shift + Fn + Up
+    SelectPageDown = Shift + Fn + Down
     SelectNextWord = Shift + Alt + Right
     SelectPreviousWord = Shift + Alt + Left
     SelectBigUp = Shift + NavBigUp
@@ -62,7 +62,7 @@ Default:
 
     // State
     Undo = Meta + Z
-    Redo = Meta + Y
+    Redo = Shift + Meta + Z
 
     // Navigate
     AddressBar = Alt + D

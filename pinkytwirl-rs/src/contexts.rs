@@ -28,6 +28,7 @@ pub struct KeyEvent {
     pub ctrl: bool,
     pub alt: bool,
     pub meta: bool,
+    pub func: bool,
 }
 
 impl KeyEvent {
@@ -53,6 +54,10 @@ impl KeyEvent {
 
     pub fn get_meta(&self) -> bool {
         self.meta
+    }
+
+    pub fn get_fn(&self) -> bool {
+        self.func
     }
 }
 
@@ -95,6 +100,7 @@ pub fn key_press(s: &str) -> KeyEvent {
     let mut ctrl = false;
     let mut alt = false;
     let mut meta = false;
+    let mut func = false;
 
     for part in parts.iter() {
         match part.as_str() {
@@ -102,6 +108,7 @@ pub fn key_press(s: &str) -> KeyEvent {
             "ctrl" => ctrl = true,
             "alt" => alt = true,
             "meta" => meta = true,
+            "fn" => func = true,
             _ => key = part,
         }
     }
@@ -118,6 +125,7 @@ pub fn key_press(s: &str) -> KeyEvent {
         ctrl: ctrl,
         alt: alt,
         meta: meta,
+        func: func,
     }
 }
 

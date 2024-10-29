@@ -8,7 +8,7 @@ fn get_engine() -> PinkyTwirlEngine {
 }
 
 fn key_down(key: &str) -> KeyEvent {
-    let (key_str, shift, ctrl, alt, meta) = parse_key_string(key);
+    let (key_str, shift, ctrl, alt, meta, func) = parse_key_string(key);
     KeyEvent {
         key: key_str,
         code: 0,
@@ -17,11 +17,12 @@ fn key_down(key: &str) -> KeyEvent {
         ctrl,
         alt,
         meta,
+        func,
     }
 }
 
 fn key_up(key: &str) -> KeyEvent {
-    let (key_str, shift, ctrl, alt, meta) = parse_key_string(key);
+    let (key_str, shift, ctrl, alt, meta, func) = parse_key_string(key);
     KeyEvent {
         key: key_str,
         code: 0,
@@ -30,15 +31,17 @@ fn key_up(key: &str) -> KeyEvent {
         ctrl,
         alt,
         meta,
+        func,
     }
 }
 
-fn parse_key_string(key: &str) -> (String, bool, bool, bool, bool) {
+fn parse_key_string(key: &str) -> (String, bool, bool, bool, bool, bool) {
     let parts: Vec<&str> = key.split(" + ").collect();
     let mut shift = false;
     let mut ctrl = false;
     let mut alt = false;
     let mut meta = false;
+    let mut func = false;
 
     let key_str = if parts.len() > 1 {
         for &part in &parts[..parts.len() - 1] {
@@ -47,6 +50,7 @@ fn parse_key_string(key: &str) -> (String, bool, bool, bool, bool) {
                 "ctrl" => ctrl = true,
                 "alt" => alt = true,
                 "meta" => meta = true,
+                "fn" => func = true,
                 _ => (),
             }
         }
@@ -55,7 +59,7 @@ fn parse_key_string(key: &str) -> (String, bool, bool, bool, bool) {
         parts[0].to_string()
     };
 
-    (key_str, shift, ctrl, alt, meta)
+    (key_str, shift, ctrl, alt, meta, func)
 }
 
 #[test]
