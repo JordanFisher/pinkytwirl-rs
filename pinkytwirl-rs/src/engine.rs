@@ -374,6 +374,7 @@ impl PinkyTwirlEngine {
             alt: option,
             meta,
             func: false,
+            modifier_down_only: false,
         };
         let (suppress, synthetic_keys) = self.handle_key_event(event, app_name, window_name);
         
@@ -391,6 +392,7 @@ impl PinkyTwirlEngine {
                         alt: key.alt,
                         meta: key.meta,
                         func: key.func,
+                        modifier_down_only: key.modifier_down_only,
                     },
                     KeyEvent {
                         key: key.key.clone(),
@@ -401,12 +403,38 @@ impl PinkyTwirlEngine {
                         alt: key.alt,
                         meta: key.meta,
                         func: key.func,
+                        modifier_down_only: false,
                     },
                 ],
                 _ => vec![key.clone()],
             })
             .collect();
         
+        // For modifier_down_only down keys we insert a meta down event before the key event.
+        self.synthetic_keys = self.synthetic_keys
+            .iter()
+            .flat_map(|key| {
+                if key.modifier_down_only && key.state == KeyState::Down {
+                    vec![
+                        KeyEvent {
+                            key: "meta".to_string(),
+                            code: self.keycodes.name_to_keycode.get("meta").cloned().unwrap_or(0),
+                            state: KeyState::Down,
+                            shift: false,
+                            ctrl: false,
+                            alt: false,
+                            meta: true,
+                            func: false,
+                            modifier_down_only: false,
+                        },
+                        key.clone(),
+                    ]
+                } else {
+                    vec![key.clone()]
+                }
+            })
+            .collect();
+
         // Add the macOS key code to the synthetic keys.
         for key in &mut self.synthetic_keys {
             key.code = self
@@ -428,6 +456,7 @@ impl PinkyTwirlEngine {
                 alt: false,
                 meta: false,
                 func: false,
+                modifier_down_only: false,
             });
         }
 

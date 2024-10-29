@@ -18,6 +18,7 @@ fn key_down(key: &str) -> KeyEvent {
         alt,
         meta,
         func,
+        modifier_down_only: false,
     }
 }
 
@@ -32,6 +33,7 @@ fn key_up(key: &str) -> KeyEvent {
         alt,
         meta,
         func,
+        modifier_down_only: false,
     }
 }
 

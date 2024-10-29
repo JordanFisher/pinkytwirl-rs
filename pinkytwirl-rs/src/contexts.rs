@@ -29,6 +29,7 @@ pub struct KeyEvent {
     pub alt: bool,
     pub meta: bool,
     pub func: bool,
+    pub modifier_down_only: bool,
 }
 
 impl KeyEvent {
@@ -102,14 +103,14 @@ pub fn key_press(s: &str) -> KeyEvent {
     let mut meta = false;
     let mut func = false;
 
-    let mut state = KeyState::DownUp;
+    let mut modifier_down_only = false;
     for part in parts.iter() {
         match part.as_str() {
             "shift" => shift = true,
             "ctrl" => ctrl = true,
             "alt" => alt = true,
             "meta" => meta = true,
-            "metadown" => { meta = true; state = KeyState::Down; },
+            "metadown" => { meta = true; modifier_down_only = true; },
             "fn" => func = true,
             _ => key = part,
         }
@@ -122,12 +123,13 @@ pub fn key_press(s: &str) -> KeyEvent {
     KeyEvent {
         key: key.to_string(),
         code: 0,
-        state: state,
+        state: KeyState::DownUp,
         shift: shift,
         ctrl: ctrl,
         alt: alt,
         meta: meta,
         func: func,
+        modifier_down_only: modifier_down_only,
     }
 }
 
