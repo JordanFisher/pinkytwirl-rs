@@ -325,18 +325,7 @@ impl PinkyTwirlEngine {
                 .flat_map(|a| self.resolve_semantic_action(a, context))
                 .collect(),
             SemanticAction::Action(action_name) => {
-                if action_name == "MetaDown" {
-                    vec![KeyEvent {
-                        key: "meta".to_string(),
-                        code: self.keycodes.name_to_keycode.get("meta").cloned().unwrap_or(0),
-                        state: KeyState::Down,
-                        shift: false,
-                        ctrl: false,
-                        alt: false,
-                        meta: false,
-                        func: false,
-                    }]
-                } else if let Some(action) = context.semantic_actions.get(action_name) {
+                if let Some(action) = context.semantic_actions.get(action_name) {
                     self.resolve_semantic_action(action, context)
                 } else if let Some(parent) = &context.parent {
                     if let Some(parent_context) = self.contexts.get(parent) {
