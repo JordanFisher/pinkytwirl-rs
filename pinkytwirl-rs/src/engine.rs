@@ -20,13 +20,15 @@
 //     [ ] Reset shift on stem change? Or up-event all meta keys on Command down
                    // (do this just in the mac app shim)
 //     [ ] X + 2 * Y, need to resolve this better if X or Y aren't keys
-//     [ ] Get meta+tab working (queue up actual key events?), and 3/4
+//     [x] Get meta+tab working (queue up actual key events?), and 3/4
+//     [ ] Improve meta+tab
 //     [ ] Caps lock keys
-//     [ ] Get meta+space+j working
+//     [x] Get meta+space+j working
 //     [ ] Page up/page down
 // [ ] Add README and MIT license
 // [x] Embed into macOS
 // [ ] chrome tab + desktop window switching, most recent, etc
+    // meta + d + j/k/l/; for desktop switching
 // [ ] text suggestion, find location of cursor, etc
 // [ ] Embed into windows (c wrapper? no c#?)
 // [ ] Refactor to not need strings.
@@ -270,10 +272,11 @@ impl PinkyTwirlEngine {
             KeyState::Up => {
                 if self.only_mappings_until_reset && !self.has_generated_synthetic_keys && !self.pressed_keys.is_empty() {
                     let synthetic_events = self.pressed_keys.iter().cloned().collect();
-                    self.pressed_keys.clear();
-                    if event.key == "meta" {
-                        self.reset();
-                    }
+                    self.reset();
+                    // self.pressed_keys.clear();
+                    // if event.key == "meta" {
+                    //     self.reset();
+                    // }
                     return (false, synthetic_events);    
                 } else {
                     self.pressed_keys.retain(|k| &k.key != &event.key);
