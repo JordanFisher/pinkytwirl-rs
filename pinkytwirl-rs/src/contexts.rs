@@ -228,12 +228,13 @@ pub fn parse_semantic_action(input: &str, keycodes: &KeyCodeLookup) -> SemanticA
     let mut sequence = Vec::new();
 
     for part in parts {
+        let part = part.trim().to_lowercase().to_string();
         if part.starts_with('"') && part.ends_with('"') {
             sequence.push(SemanticAction::LiteralString(
                 part[1..part.len() - 1].to_string(),
             ));
         } else if part.contains('+') {
-            sequence.push(SemanticAction::KeyEvent(key_press(part)));
+            sequence.push(SemanticAction::KeyEvent(key_press(&part)));
         } else if part.contains('*') {
             let (count, key) = part.split_once('*').unwrap();
             let count: usize = count.trim().parse().unwrap_or(1);
@@ -241,8 +242,8 @@ pub fn parse_semantic_action(input: &str, keycodes: &KeyCodeLookup) -> SemanticA
             for _ in 0..count {
                 sequence.push(SemanticAction::KeyEvent(key_press(&key)));
             }
-        } else if keycodes.name_to_keycode.contains_key(part) {
-            sequence.push(SemanticAction::KeyEvent(key_press(part)));
+        } else if keycodes.name_to_keycode.contains_key(&part) {
+            sequence.push(SemanticAction::KeyEvent(key_press(&part)));
         } else {
             sequence.push(SemanticAction::Action(part.to_string()));
         }

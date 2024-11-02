@@ -33,7 +33,10 @@ pub fn parse_semantics_file(
                 let semantic_action = parse_semantic_action(&action_definition, keycodes);
                 context
                     .semantic_actions
-                    .insert(action_name, semantic_action);
+                    .insert(action_name.clone(), semantic_action.clone());
+                context
+                    .semantic_actions
+                    .insert(action_name.to_lowercase(), semantic_action);
             }
         }
     }
