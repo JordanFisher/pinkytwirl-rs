@@ -433,7 +433,7 @@ impl PinkyTwirlEngine {
         self.synthetic_keys = self.synthetic_keys
             .iter()
             .flat_map(|key| {
-                if key.modifier_down_only && key.state == KeyState::Down {
+                if key.modifier_down_only {
                     vec![
                         KeyEvent {
                             key: "meta".to_string(),
