@@ -159,7 +159,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let synthetic_keys = engine?.get_synthetic_events()
         for i in 0..<synthetic_keys!.len() {
             let key = synthetic_keys![i]
-            print("Synthetic key to generate \(i): \(key) \(key.get_code())")
+            print("Synthetic key to generate \(i): \(key.is_down()) \(key.get_code())")
 
             if let synth = CGEvent(keyboardEventSource: nil, virtualKey: UInt16(key.get_code()), keyDown: key.is_down()) {
                 if key.get_shift() {
