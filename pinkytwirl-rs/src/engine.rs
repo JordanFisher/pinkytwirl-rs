@@ -127,6 +127,17 @@ impl PinkyTwirlEngine {
         Ok(())
     }
 
+    pub fn try_reload_configurations(&mut self) {
+        let backup_contexts = self.contexts.clone();
+        if let Err(e) = self.load_configurations() {
+            eprintln!("Error reloading configurations: {}", e);
+            self.contexts = backup_contexts;
+        } else {
+            println!("Configurations reloaded successfully.");
+            self.startup = Ok(());
+        }
+    }
+
     pub fn get_context(&self, app_name: &str, window_name: &str) -> Option<&Context> {
         // Helper function for exact match
         let exact_match = |name: &str| -> Option<&Context> {
@@ -270,6 +281,11 @@ impl PinkyTwirlEngine {
                 }
             }
             KeyState::Up => {
+                // If the key is the escape key, reload the configurations.
+                if event.key == "escape" {
+                    self.try_reload_configurations();
+                }
+
                 if self.only_mappings_until_reset && !self.has_generated_synthetic_keys && !self.pressed_keys.is_empty() {
                     let synthetic_events = self.pressed_keys.iter().cloned().collect();
                     self.reset();

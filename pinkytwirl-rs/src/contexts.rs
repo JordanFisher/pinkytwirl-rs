@@ -162,7 +162,7 @@ impl fmt::Display for SemanticAction {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Context {
     pub name: String,
     pub aliases: Vec<String>,
