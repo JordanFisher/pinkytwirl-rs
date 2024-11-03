@@ -430,10 +430,12 @@ impl PinkyTwirlEngine {
             .collect();
         
         // For modifier_down_only down keys we insert a meta down event before the key event.
+        let mut meta_down = false;
         self.synthetic_keys = self.synthetic_keys
             .iter()
             .flat_map(|key| {
                 if key.modifier_down_only {
+                    meta_down = true;
                     vec![
                         KeyEvent {
                             key: "meta".to_string(),
@@ -464,17 +466,63 @@ impl PinkyTwirlEngine {
                 .unwrap_or(0);
         }
 
-        // Add a shift up.
+        // Add modifier resets.
         if suppress {
             self.synthetic_keys.push(KeyEvent {
                 key: "shift".to_string(),
                 code: self.keycodes.name_to_keycode.get("shift").cloned().unwrap_or(0),
                 state: KeyState::Up,
-                shift: false,
+                shift: true,
                 ctrl: false,
                 alt: false,
                 meta: false,
                 func: false,
+                modifier_down_only: false,
+            });
+            self.synthetic_keys.push(KeyEvent {
+                key: "ctrl".to_string(),
+                code: self.keycodes.name_to_keycode.get("ctrl").cloned().unwrap_or(0),
+                state: KeyState::Up,
+                shift: false,
+                ctrl: true,
+                alt: false,
+                meta: false,
+                func: false,
+                modifier_down_only: false,
+            });
+            self.synthetic_keys.push(KeyEvent {
+                key: "alt".to_string(),
+                code: self.keycodes.name_to_keycode.get("alt").cloned().unwrap_or(0),
+                state: KeyState::Up,
+                shift: false,
+                ctrl: false,
+                alt: true,
+                meta: false,
+                func: false,
+                modifier_down_only: false,
+            });
+            if !meta_down {
+                self.synthetic_keys.push(KeyEvent {
+                    key: "meta".to_string(),
+                    code: self.keycodes.name_to_keycode.get("meta").cloned().unwrap_or(0),
+                    state: KeyState::Up,
+                    shift: false,
+                    ctrl: false,
+                    alt: false,
+                    meta: true,
+                    func: false,
+                    modifier_down_only: false,
+                });
+            }
+            self.synthetic_keys.push(KeyEvent {
+                key: "fn".to_string(),
+                code: self.keycodes.name_to_keycode.get("fn").cloned().unwrap_or(0),
+                state: KeyState::Up,
+                shift: false,
+                ctrl: false,
+                alt: false,
+                meta: false,
+                func: true,
                 modifier_down_only: false,
             });
         }

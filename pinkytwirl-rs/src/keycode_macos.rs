@@ -49,16 +49,20 @@ pub fn create_keycode_map() -> KeyCodeLookup {
     lookup.add_pair(0x31, "space");
     lookup.add_pair(0x33, "backspace"); // Note: On macOS this is called `delete`.
     lookup.add_pair(0x35, "escape");
+    lookup.add_pair(0x37, "command");
     lookup.add_pair(0x37, "meta"); // Note: On macOS this is called `command`.
     lookup.add_pair(0x38, "shift");
     lookup.add_pair(0x39, "capsLock");
     lookup.add_pair(0x3A, "option");
+    lookup.add_pair(0x3A, "alt");
     lookup.add_pair(0x3B, "control");
+    lookup.add_pair(0x3B, "ctrl");
     lookup.add_pair(0x36, "rightCommand");
     lookup.add_pair(0x3C, "rightShift");
     lookup.add_pair(0x3D, "rightOption");
     lookup.add_pair(0x3E, "rightControl");
     lookup.add_pair(0x3F, "function");
+    lookup.add_pair(0x3F, "fn");
 
     // Arrow keys
     lookup.add_pair(0x7B, "leftArrow");
