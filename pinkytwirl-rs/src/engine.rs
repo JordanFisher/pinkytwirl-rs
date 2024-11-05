@@ -50,6 +50,7 @@ pub struct PinkyTwirlEngine {
     only_mappings_until_reset: bool,
     has_generated_synthetic_keys: bool,
     synthetic_keys: Vec<KeyEvent>,
+    synthetic_keys_on_next_up_event: Vec<KeyEvent>,
 
     pub startup: Result<(), Box<dyn Error>>,
     debug_key_events: bool,
@@ -68,6 +69,7 @@ impl PinkyTwirlEngine {
             only_mappings_until_reset: false,
             has_generated_synthetic_keys: false,
             synthetic_keys: Vec::new(),
+            synthetic_keys_on_next_up_event: Vec::new(),
 
             startup: Ok(()),
             debug_key_events: true,
@@ -467,8 +469,8 @@ impl PinkyTwirlEngine {
         }
 
         // Add modifier resets.
-        if suppress {
-            self.synthetic_keys.push(KeyEvent {
+        if suppress && down {
+            self.synthetic_keys_on_next_up_event.push(KeyEvent {
                 key: "shift".to_string(),
                 code: self.keycodes.name_to_keycode.get("shift").cloned().unwrap_or(0),
                 state: KeyState::Up,
@@ -479,7 +481,7 @@ impl PinkyTwirlEngine {
                 func: false,
                 modifier_down_only: false,
             });
-            self.synthetic_keys.push(KeyEvent {
+            self.synthetic_keys_on_next_up_event.push(KeyEvent {
                 key: "ctrl".to_string(),
                 code: self.keycodes.name_to_keycode.get("ctrl").cloned().unwrap_or(0),
                 state: KeyState::Up,
@@ -490,7 +492,7 @@ impl PinkyTwirlEngine {
                 func: false,
                 modifier_down_only: false,
             });
-            self.synthetic_keys.push(KeyEvent {
+            self.synthetic_keys_on_next_up_event.push(KeyEvent {
                 key: "alt".to_string(),
                 code: self.keycodes.name_to_keycode.get("alt").cloned().unwrap_or(0),
                 state: KeyState::Up,
@@ -502,7 +504,7 @@ impl PinkyTwirlEngine {
                 modifier_down_only: false,
             });
             if !meta_down {
-                self.synthetic_keys.push(KeyEvent {
+                self.synthetic_keys_on_next_up_event.push(KeyEvent {
                     key: "meta".to_string(),
                     code: self.keycodes.name_to_keycode.get("meta").cloned().unwrap_or(0),
                     state: KeyState::Up,
@@ -514,7 +516,7 @@ impl PinkyTwirlEngine {
                     modifier_down_only: false,
                 });
             }
-            self.synthetic_keys.push(KeyEvent {
+            self.synthetic_keys_on_next_up_event.push(KeyEvent {
                 key: "fn".to_string(),
                 code: self.keycodes.name_to_keycode.get("fn").cloned().unwrap_or(0),
                 state: KeyState::Up,
@@ -525,6 +527,10 @@ impl PinkyTwirlEngine {
                 func: true,
                 modifier_down_only: false,
             });
+        }
+
+        if !down {
+            self.synthetic_keys.extend(self.synthetic_keys_on_next_up_event.drain(..));
         }
 
         // Return whether the event should be suppressed.

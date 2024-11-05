@@ -189,20 +189,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             return Unmanaged.passRetained(event)
         }
-
-            // case .keyDown:
-            //     if keyCode == 38 {
-            //         if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: true) {
-            //             synth.flags.insert([.maskShift, .maskAlternate])
-            //             synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-            //             synth.post(tap: .cgSessionEventTap)
-            //         }
-            //         if let synth = CGEvent(keyboardEventSource: nil, virtualKey: 123, keyDown: false) {
-            //             synth.flags.insert([.maskShift, .maskAlternate])
-            //             synth.setIntegerValueField(.eventSourceUserData, value: 0x1234)
-            //             synth.post(tap: .cgSessionEventTap)
-            //         }
-            //         return nil
-            //     }
     }
 }
