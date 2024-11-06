@@ -93,3 +93,7 @@ Chrome:
 Firefox:
   aliases: ["Firefox"]
   parent: Browser
+
+iTerm:
+  aliases: ["iTerm2"]
+  parent: Default

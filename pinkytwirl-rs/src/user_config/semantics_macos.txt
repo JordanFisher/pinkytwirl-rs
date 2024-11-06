@@ -6,8 +6,8 @@ Default:
     NavDown = Down
     NavHome = Meta + Left
     NavEnd = Meta + Right
-    NavPageUp = Fn + Up
-    NavPageDown = Fn + Down
+    NavPageUp = PageUp
+    NavPageDown = PageDown
     NavNextWord = Alt + Right
     NavPreviousWord = Alt + Left
     NavBigUp = 12 * Up
@@ -22,14 +22,14 @@ Default:
     SelectDown = Shift + Down
     SelectHome = Shift + Meta + Left
     SelectEnd = Shift + Meta + Right
-    SelectPageUp = Shift + Fn + Up
-    SelectPageDown = Shift + Fn + Down
+    SelectPageUp = Shift + PageUp
+    SelectPageDown = Shift + PageDown
     SelectNextWord = Shift + Alt + Right
     SelectPreviousWord = Shift + Alt + Left
-    SelectBigUp = Shift + NavBigUp
-    SelectBigDown = Shift + NavBigDown
-    SelectTop = Shift + NavTop
-    SelectBottom = Shift + NavBottom
+    SelectBigUp = Shift + Up | Shift + Up | Shift + Up | Shift + Up | Shift + Up | Shift + Up | Shift + Up | Shift + Up | Shift + Up | Shift + Up | Shift + Up | Shift + Up
+    SelectBigDown = Shift + Down | Shift + Down | Shift + Down | Shift + Down | Shift + Down | Shift + Down | Shift + Down | Shift + Down | Shift + Down | Shift + Down | Shift + Down | Shift + Down
+    SelectTop = Shift + Meta + Up
+    SelectBottom = Shift + Meta + Down
 
     // Text deletion
     DeleteLine = Home | Home | Shift + End | Delete
@@ -135,12 +135,12 @@ VSCode:
     FindFile                  = Meta + P
     ViewErrorList             = Meta + Shift + M
     Fullscreen                = Meta + K | Z
-    GotoDefinition            = F12
+    GotoDefinition            = Fn + F12
     ViewOutput                = Meta + Shift + U
     ViewDebugConsole          = Meta + Shift + Y
     ViewTerminal              = Meta + Tilde
-    Comment                   = Meta + Question
-    Uncomment                 = Meta + K | Meta + U
+    Comment                   = Meta + forwardSlash
+    Uncomment                 = Meta + forwardSlash
     ClearScreen               = Meta + L
 
 Excel:
@@ -159,3 +159,7 @@ Firefox:
     NewTab     = Meta + T
     CloseTab   = Meta + W
     Fullscreen = F11
+
+iTerm:
+    DeleteNextWord = Fn + Alt + Delete
+    DeletePreviousWord = Alt + Delete
