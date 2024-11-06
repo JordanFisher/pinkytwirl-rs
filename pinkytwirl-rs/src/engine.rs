@@ -6,7 +6,7 @@
 // [x] State manager, input/output.
 // [x] copy from claude, but return a Vec<Key> instead of Vec<String>
 // [x] Basic tests with synthetic input/outputs.
-// [ ] Get rest of FFI built and initial cycling
+// [x] Get rest of FFI built and initial cycling
 //     [x] Keep pressed keys up to date correctly.
 //     [x] Ambiguous based on stems.
 //     [x] Flag for once no mapping should be applied until full reset. Force reset on meta up.
@@ -25,8 +25,9 @@
 //     [ ] Caps lock keys
 //     [x] Get meta+space+j working
 //     [ ] Page up/page down
-// [ ] Add README and MIT license
+// [x] Add README and MIT license
 // [x] Embed into macOS
+// [ ] Keep track of which virtual keys are pressed, and only send up events for those that arent
 // [ ] chrome tab + desktop window switching, most recent, etc
     // meta + d + j/k/l/; for desktop switching
 // [ ] text suggestion, find location of cursor, etc
@@ -419,11 +420,11 @@ impl PinkyTwirlEngine {
                         key: key.key.clone(),
                         code: key.code,
                         state: KeyState::Up,
-                        shift: key.shift,
-                        ctrl: key.ctrl,
-                        alt: key.alt,
-                        meta: key.meta,
-                        func: key.func,
+                        shift: false,
+                        ctrl: false,
+                        alt: false,
+                        meta: false,
+                        func: key.modifier_down_only,
                         modifier_down_only: false,
                     },
                 ],
